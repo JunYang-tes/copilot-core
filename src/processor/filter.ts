@@ -13,7 +13,7 @@ export function grep(op: IOption, list: IResult[]): IResult[] {
   const test: RegExp = new RegExp(op.strings.join(" "), flags)
   debug(test)
   return list.filter((item) => {
-    debug(item.value, test.test(item.value))
+    // debug(item.value, test.test(item.value))
     return test.test(item.value)
   })
 }

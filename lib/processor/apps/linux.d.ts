@@ -10,14 +10,15 @@ declare var _default: {
     init(cfg: IConfig): Promise<void>;
     list(): any;
     launch(op: IOption, list: IResult[]): {
-        title: string;
         text: string;
-        value: string;
         param: {
             action: string;
             cmd: any;
             args: any[];
         };
+        title: string;
+        value: string;
+        icon?: string;
     }[];
 };
 export default _default;

@@ -19,7 +19,7 @@ export default {
   async init(cfg: IConfig) {
     debug("Init apps:", cfg)
     this.path = cfg.path
-    this.launch = cfg.launch
+    this.cfg = cfg
     let icons: { [name: string]: string } = {}
     let app = /\.desktop$/
     this.entires = []
@@ -95,13 +95,12 @@ export default {
   launch(op: IOption, list: IResult[]) {
     let uri = op.uri || ""
     return list.map(i => ({
-      title: i.title,
+      ...i,
       text: `Run ${i.text}`,
-      value: i.value,
       param: {
         action: "cmd",
-        cmd: this.launch,
-        args: [i.param.entryName, uri]
+        cmd: this.cfg.launch,
+        args: uri.length ? [i.param.entryName, uri] : [i.param.entryName]
       }
     }))
   }

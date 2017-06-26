@@ -37,3 +37,6 @@ export interface IConfig {
         [name: string]: string;
     };
 }
+export declare type ICompleteParam = IRunParam & {
+    processor: Processor;
+};

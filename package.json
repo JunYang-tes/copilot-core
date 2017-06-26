@@ -1,6 +1,6 @@
 {
-  "name": "copilot",
-  "version": "0.0.0",
+  "name": "copilot-core",
+  "version": "0.0.1",
   "description": "copilot",
   "license": "MIT",
   "repository": "",
@@ -20,10 +20,12 @@
     "test": "npm run build && mocha --compilers ts:ts-node/register --recursive 'test/**/*-spec.ts'",
     "coverage": "nyc --include='src/**/*.ts' --reporter=text --reporter=html --reporter=lcov mocha --compilers ts:ts-node/register --recursive 'test/**/*.test.ts'",
     "watch": "npm run build -- --watch",
+    "dev": "yarn build && cp -r lib/* ../copilot-gtk/node_modules/copilot-core/lib",
+    "cp": " cp -r lib/* ../copilot-gtk/node_modules/copilot-core/lib",
     "watch:test": "npm run test -- --watch"
   },
   "dependencies": {
-    "array-asyncify": "^0.0.5",
+    "array-asyncify": "^0.0.7",
     "b-logger": "^0.0.4",
     "cli-argparser": "^0.0.11",
     "debug": "^2.6.8",

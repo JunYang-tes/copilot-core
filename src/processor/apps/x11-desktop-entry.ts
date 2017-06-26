@@ -1,4 +1,3 @@
-const desktopEntry = require("desktop-entry/lib/desktop-entry")
 import * as fs from "fs"
 import { readFile } from "../../util"
 const ini = require("ini")

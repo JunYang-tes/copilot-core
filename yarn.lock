@@ -66,9 +66,9 @@ arr-flatten@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/arr-flatten/-/arr-flatten-1.0.3.tgz#a274ed85ac08849b6bd7847c4580745dc51adfb1"
 
-array-asyncify@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/array-asyncify/-/array-asyncify-0.0.5.tgz#7bcbb1ce7707407d1817a61516230cdae20a5e50"
+array-asyncify@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/array-asyncify/-/array-asyncify-0.0.7.tgz#b3ad826f6121e26975af88a3c542360f6814ab3a"
 
 array-unique@^0.2.1:
   version "0.2.1"
@@ -430,13 +430,6 @@ default-require-extensions@^1.0.0:
 delayed-stream@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
-
-desktop-entry@^0.1.0-pre:
-  version "0.1.0-pre"
-  resolved "https://registry.yarnpkg.com/desktop-entry/-/desktop-entry-0.1.0-pre.tgz#ec4d12f1ffabde57d4688fb82d2ca0503013cacd"
-  dependencies:
-    line-reader "~0.2.3"
-    string "~1.5.0"
 
 detect-indent@^4.0.0:
   version "4.0.0"
@@ -970,10 +963,6 @@ lexor@^1.0.1:
   resolved "https://registry.yarnpkg.com/lexor/-/lexor-1.0.1.tgz#e1e08f4b747b6a477af277c4e81d09cfc2831be1"
   dependencies:
     inherits "^2.0.1"
-
-line-reader@~0.2.3:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/line-reader/-/line-reader-0.2.4.tgz#c4392b587dea38580c9678570e6e8e49fce52622"
 
 load-json-file@^1.0.0:
   version "1.1.0"
@@ -1550,10 +1539,6 @@ string-width@^1.0.1, string-width@^1.0.2:
     code-point-at "^1.0.0"
     is-fullwidth-code-point "^1.0.0"
     strip-ansi "^3.0.0"
-
-string@~1.5.0:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/string/-/string-1.5.1.tgz#fbcc3a865c34fbe6e2b59bdef01f482f5d52354e"
 
 string_decoder@~0.10.x:
   version "0.10.31"

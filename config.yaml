@@ -29,7 +29,10 @@ processors :
         action: count
     
 alias:
-  wins: buidin.win.list
-  grep: buidin.filter.grep
-  a: wins | grep -i ${arg} | buidin.win.active
-  run: buidin.apps.list | grep -i ${arg} | buidin.apps.launch
+  wins: buildin.win.list
+  grep: buildin.filter.grep
+  tail: buildin.tools.tail
+  head: buildin.tools.head
+  last: tail 1
+  a: wins | grep -i ${arg} | buildin.win.active
+  run: buildin.apps.list | grep -i ${arg} | buildin.apps.launch

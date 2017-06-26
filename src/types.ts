@@ -34,3 +34,6 @@ export type ICmdParam = IRunParam & {
 export interface IConfig {
   alias: { [name: string]: string }
 }
+export type ICompleteParam = IRunParam & {
+  processor: Processor
+}

@@ -9,10 +9,16 @@ const { debug, error } = require("b-logger")("copilot.test")
 
 startUp()
   .then(() => {
-    handle("Youdao")
-      .then((ret: IResult[]) => {
-        debug(ret)
-      })
+    // handle("gcolor")
+    //   .then((ret: IResult[]) => {
+    //     debug("========", ret)
+    //     if (ret.length) {
+    //       run(ret[0])
+    //     }
+    //   })
+    //   .catch(e => {
+    //     console.warn(e)
+    //   })
 
     // handle("buildin.apps.Youdao")
     //   .then((ret: IResult[]) => {
@@ -23,13 +29,11 @@ startUp()
     //     }
     //   })
 
-    // handle("run google")
-    //   .then((ret: IResult[]) => {
-    //     debug(ret)
-    //     if (ret.length) {
-    //       run(ret[0])
-    //     }
-    //   })
+    handle("run google")
+      .then((ret: IResult[]) => {
+        debug(ret)
+        
+      })
     // handle("a google")
     //   .then((ret: IResult[]) => {
     //     ret.forEach(debug)
