@@ -35,7 +35,7 @@ async function parse(
       if (isCheckResultArray(checkResult)) {
         const invalid = checkResult as InvalidResult[]
         Object.keys(obj)
-          .filter((key) => key !== "check" || invalid.every(e => e.key !== key))
+          .filter((key) => key !== "check" && /_$/.test(key) && invalid.every(e => e.key !== key))
           .map(key => obj[key].bind(obj))
           .forEach(fun => {
             processors[name({ funName: fun.name, fileName })] = fun
@@ -47,7 +47,7 @@ async function parse(
       } else {
         if (checkResult.valid) {
           Object.keys(obj)
-            .filter(key => key !== "check" && util.isFunction(obj[key]))
+            .filter(key => key !== "check" && /_$/.test(key) && util.isFunction(obj[key]))
             .map(key => obj[key].bind(obj))
             .forEach(fun => {
               debug(`Load processor ${fun.name}`)

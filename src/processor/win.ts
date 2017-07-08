@@ -1,6 +1,9 @@
 import utils from "../util"
 import { IResult, ICmdParam } from "../types"
 export default {
+  filter_(list: IResult[]) {
+    return list ? list.filter(i => i.param && i.param.id && /^0x[0-9a-f]/i) : []
+  },
   async check() {
     try {
       await utils.exec("which", "wmctrl")
@@ -53,4 +56,36 @@ export default {
       }
     }))
   },
+  move(op: any, list: [IResult]) {
+    let [x, y] = [0, 0]
+    if ("x" in op && "y" in op) {
+      [x, y] = [+op.x, +op.y]
+    } else if (op.strings.length === 2) {
+      [x, y] = op.strings
+    }
+
+    return list.map(item => ({
+      title: item.title,
+      text: `Move to (${x},${y})`,
+      param: {
+        action: "cmd",
+        cmd: "xdotool",
+        args: ["windowmove", item.param.id, x, y]
+      }
+    }))
+  },
+  toWorkspace(op: any, list: [IResult]) {
+    //TODO:default by name
+    let wsIdx = 0;
+    let wsName = "TODO";
+    return list.map(item => ({
+      title: item.title,
+      text: `Move window to workspace ${wsName}`,
+      param: {
+        action: "cmd",
+        cmd: "xdotool",
+        args: ["set_desktop_for_window", item.param.id, wsIdx]
+      }
+    }))
+  }
 }

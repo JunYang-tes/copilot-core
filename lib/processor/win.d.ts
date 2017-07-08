@@ -1,5 +1,6 @@
 import { IResult } from "../types";
 declare var _default: {
+    filter_(list: IResult[]): IResult[];
     check(): Promise<{
         valid: boolean;
     }>;
@@ -20,6 +21,24 @@ declare var _default: {
         };
     }[];
     close(op: any, list: [IResult]): {
+        title: string;
+        text: string;
+        param: {
+            action: string;
+            cmd: string;
+            args: any[];
+        };
+    }[];
+    move(op: any, list: [IResult]): {
+        title: string;
+        text: string;
+        param: {
+            action: string;
+            cmd: string;
+            args: any[];
+        };
+    }[];
+    toWorkspace(op: any, list: [IResult]): {
         title: string;
         text: string;
         param: {
