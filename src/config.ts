@@ -10,8 +10,8 @@ export function getAlias(): { [alias: string]: string } {
   return config.alias
 }
 function lookupConfigFile() {
-  if (existsSync(`${utils.path("~/.config/copilot/config")}`)) {
-    return `${utils.path("~/.config/copilot/config")}`
+  if (existsSync(`${utils.path("~/.config/copilot/config.yaml")}`)) {
+    return `${utils.path("~/.config/copilot/config.yaml")}`
   }
   let entryPoint = parse(process.argv[1]).dir
   if (existsSync(`${entryPoint}/config.yaml`)) {
