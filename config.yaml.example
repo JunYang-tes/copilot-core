@@ -1,0 +1,38 @@
+gui: 
+  hot-keys:
+    <alt><space>: show
+    <super>r: run
+    <super>t: tr
+
+using:
+  - buildin.apps
+
+processors : 
+  buildin.apps.init[linux]:
+    launch: gtk-launch
+    icon: \.png$|\.jpg$
+    icons:
+      - ~/.local/share/icons/hicolor/48x48/apps
+      - /usr/share/icons/hicolor/48x48/apps
+      - /usr/share/pixmaps
+    path:
+      # - ~/Desktop
+      - ~/.local/share/applications
+      - /usr/share/applications
+  buildin.win.list: 
+    desc: list all windows
+  buildin.filter.grep:
+    desc: grep input list
+    op:
+      i:
+        help: ignore case
+        action: count
+    
+alias:
+  wins: buildin.win.list
+  grep: buildin.filter.grep
+  tail: buildin.tools.tail
+  head: buildin.tools.head
+  last: tail 1
+  a: wins | grep -i ${arg} | buildin.win.active
+  run: buildin.apps.list | grep -i ${arg} | buildin.apps.launch
