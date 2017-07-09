@@ -32,7 +32,6 @@ startUp()
     handle("run google")
       .then((ret: IResult[]) => {
         debug(ret)
-        
       })
     // handle("a google")
     //   .then((ret: IResult[]) => {
@@ -44,7 +43,6 @@ startUp()
     //   .catch(e => {
     //     error(e)
     //   })
-
 
     // rl.setPrompt(">")
     // rl.on("line", async (line: any) => {

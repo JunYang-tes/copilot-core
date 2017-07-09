@@ -18,9 +18,34 @@ export function tail(op: { strings: [string] }, list: IResult[]): IResult[] {
   return list.slice(-n, list.length)
 }
 export function count(op: IOption, list: IResult[]) {
-  return {
+  return [{
     title: "Count",
     text: list.length,
     value: list.length
+  }]
+}
+export function now() {
+  let d = new Date()
+  return [{
+    title: "Now",
+    text: d.toLocaleString(),
+    value: d.getTime()
+  }]
+}
+const scalc = require("scalc")
+export function calc(op: IOption) {
+  let exp = op.strings.join(" ").trim()
+  if (exp.length) {
+    let result = scalc(exp)
+    return [{
+      title: result,
+      text: `${exp} = ${result}`,
+      value: ""
+    }]
+  } else {
+    return [{
+      title: "Calculator",
+      text: "Calculate math expression"
+    }]
   }
 }

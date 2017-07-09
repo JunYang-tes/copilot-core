@@ -47,7 +47,6 @@ export default {
         }]
       }
     }
-
     await Promise.all(this.path.map(async (p: string) => {
       p = utils.path(p)
       let entires = (await readdir(p))
@@ -77,7 +76,7 @@ export default {
               i++
             }
             name = tmp
-            this[name] = launder(entryFile)
+            // this[name] = launder(entryFile)
             debug(`Create launcher:`, entry.name, `${p}/${entryFile}`)
             return result
           } catch (e) {

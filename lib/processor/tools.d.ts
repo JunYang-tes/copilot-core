@@ -12,4 +12,17 @@ export declare function count(op: IOption, list: IResult[]): {
     title: string;
     text: number;
     value: number;
-};
+}[];
+export declare function now(): {
+    title: string;
+    text: string;
+    value: number;
+}[];
+export declare function calc(op: IOption): {
+    title: any;
+    text: string;
+    value: string;
+}[] | {
+    title: string;
+    text: string;
+}[];

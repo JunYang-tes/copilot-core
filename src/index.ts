@@ -71,7 +71,7 @@ export async function handle(input: string): Promise<IResult[]> {
   let cmds = parse(input)
   return asyncify(cmds)
     .reduce(async (pre: any, next: IParsedCmd, idx: number) => {
-      debug("Process: ", next, idx, cmds.length - 1)
+      debug("Process: ", next)
       let p = lookup(next.cmd)
       if (p) {
         ret = await p(next.args || {}, ret)

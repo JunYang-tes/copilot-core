@@ -5,6 +5,8 @@ gui:
     <super>t: tr
 
 using:
+  - buildin
+  - buildin.tools
   - buildin.apps
 
 processors : 
@@ -33,6 +35,11 @@ alias:
   grep: buildin.filter.grep
   tail: buildin.tools.tail
   head: buildin.tools.head
+  first: head 1
   last: tail 1
-  a: wins | grep -i ${arg} | buildin.win.active
-  run: buildin.apps.list | grep -i ${arg} | buildin.apps.launch
+  a: wins | grep -i __arg__ | buildin.win.active
+  wm: wins | grep -i __arg__ | buildin.win.move
+  run: buildin.apps.list | grep -i __arg__ | buildin.apps.launch
+  github: buildin.file.open https://github.com/search?utf8=__arg__
+  google: buildin.file.open https://www.google.com.sg/search?q=__arg__
+  bing: buildin.file.open https://www.bing.com/search?q=__arg__
