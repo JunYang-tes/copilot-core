@@ -21,6 +21,7 @@
     ],
     "object-literal-sort-keys": false,
     "arrow-parens": false,
+    "no-bitwise": false,
     "no-var-requires": false
   }
 }
