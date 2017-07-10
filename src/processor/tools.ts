@@ -32,6 +32,12 @@ export function now() {
     value: d.getTime()
   }]
 }
+export function toPipe(op: IOption) {
+  return [{
+    ...op
+  }]
+}
+
 const scalc = require("scalc")
 export function calc(op: IOption) {
   let exp = op.strings.join(" ").trim()

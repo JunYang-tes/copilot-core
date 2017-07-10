@@ -1,15 +1,28 @@
 import * as fs from "fs"
 import * as OS from "os"
-import { readdir } from "../util"
+import { readdir, utils } from "../util"
 import { parse, resolve } from "path"
 import { IResult } from "../types"
+
+const { debug } = require("b-logger")("processor.file")
 // TODO
 const openCmd = "xdg-open"
 
 export default {
   path: OS.homedir(),
   async check() {
-
+    debug("Check xdg-open")
+    try {
+      utils.exec("which", openCmd)
+      return {
+        valid: true
+      }
+    } catch (e) {
+      return {
+        valid: false,
+        msg: `No ${openCmd} found, file processors not available`
+      }
+    }
   },
   cd(op: { strings: string[] }) {
     let [path] = op.strings

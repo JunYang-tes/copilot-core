@@ -46,3 +46,4 @@ export const stat: (path: string | Buffer) => Promise<fs.Stats> = helper.promisi
 export const readdir: (path: string | Buffer) => Promise<string[]> = helper.promisify(fs.readdir)
 export const readFile: (path: string, encoding: string) => Promise<string> = helper.promisify(fs.readFile)
 export default helper
+export const utils = helper

@@ -1,7 +1,9 @@
 import { IResult } from "../types";
 declare var _default: {
     path: string;
-    check(): Promise<void>;
+    check(): Promise<{
+        valid: boolean;
+    }>;
     cd(op: {
         strings: string[];
     }): void;

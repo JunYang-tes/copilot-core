@@ -1,7 +1,7 @@
 import { load } from "./processor/index"
 import { IResult, Processor } from "./types"
 import { parse, IParsedCmd } from "./cmd"
-import { loadConfig, getConfig, getUsing } from "./config"
+import { loadConfig, getConfig, getUsing, getAlias } from "./config"
 import action from "./action"
 const { debug, warn, error } = require("b-logger")("copilot.main")
 const { asyncify } = require("array-asyncify")
@@ -49,18 +49,29 @@ function lookup(name: string): Processor {
 function complete(cmd: string) {
   let names = getUsing().map(name => `${name}.${cmd}`.toLowerCase())
   names.push(cmd.toLowerCase())
-  return processorNames.filter(name => {
-    return names.some(i => name.toLowerCase().startsWith(i))
-  })
-    .map(name => ({
-      title: name,
-      text: name,
-      value: name,
-      param: {
-        action: "complete",
-        processor: processors[name]
-      }
+
+  let alias = Object.keys(getAlias())
+    .filter(a => a.startsWith(cmd))
+    .map(alia => ({
+      title: alia,
+      text: "Alia hint",
+      value: alia
     }))
+
+  return alias.concat(
+    processorNames.filter(name => {
+      return names.some(i => name.toLowerCase().startsWith(i))
+    })
+      .map(name => ({
+        title: name,
+        text: name,
+        value: name,
+        param: {
+          action: "complete",
+          processor: processors[name]
+        }
+      }))
+  )
 }
 
 export async function handle(input: string): Promise<IResult[]> {

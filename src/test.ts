@@ -29,7 +29,7 @@ startUp()
     //     }
     //   })
 
-    handle("run google")
+    handle("bing test")
       .then((ret: IResult[]) => {
         debug(ret)
       })

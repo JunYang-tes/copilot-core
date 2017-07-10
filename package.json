@@ -1,6 +1,6 @@
 {
   "name": "copilot-core",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "description": "copilot",
   "license": "MIT",
   "repository": "",
@@ -28,11 +28,12 @@
   "dependencies": {
     "array-asyncify": "^0.0.7",
     "b-logger": "^0.0.4",
-    "cli-argparser": "^0.0.11",
+    "cli-argparser": "^0.0.12",
     "debug": "^2.6.8",
     "ini": "^1.3.4",
     "js-yaml": "^3.8.4",
-    "scalc": "^2.0.1"
+    "scalc": "^2.0.1",
+    "twss": "^0.1.6"
   },
   "devDependencies": {
     "@types/chai": "^3.0.0",

@@ -47,7 +47,7 @@ export function prepare(cmd: string): IPrepared[] {
       if (e.cmd in alias) {
         e.cmd = alias[e.cmd]
         if (e.cmd.includes("__arg__")) {
-          e.cmd = e.cmd.replace("__arg__", e.rest)
+          e.cmd = e.cmd.replace(/__arg__/g, e.rest.trim())
           e.rest = ""
         }
         flag = true
@@ -60,6 +60,6 @@ export function prepare(cmd: string): IPrepared[] {
       ret = split(cmd.substr(0, cmd.length - 1))
     }
   }
-  debug(`Convert ${cmd} to `, ret)
+  debug(`Convert ${cmd} to \n`, ret)
   return ret
 }
