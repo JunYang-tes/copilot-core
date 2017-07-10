@@ -2,6 +2,7 @@ import { readFileSync, existsSync } from "fs"
 import { parse } from "path"
 import os = require("os")
 import utils from "./util"
+const merge = require("deepmerge")
 const { debug } = require("b-logger")("copilot.config")
 const yaml = require("js-yaml")
 let config: any = null
@@ -9,16 +10,17 @@ export function getAlias(): { [alias: string]: string } {
 
   return config.alias
 }
-function lookupConfigFile() {
-  if (existsSync(`${utils.path("~/.config/copilot/config.yaml")}`)) {
-    return `${utils.path("~/.config/copilot/config.yaml")}`
-  }
+function lookupConfigFile(name = "config.yaml") {
   let entryPoint = parse(process.argv[1]).dir
-  if (existsSync(`${entryPoint}/config.yaml`)) {
-    return `${entryPoint}/config.yaml`
-  }
-  if (existsSync(`${__dirname}/../config.yaml`)) {
-    return `${__dirname}/../config.yaml`
+  let paths = [
+    utils.path(`~/.config/copilot/${name}`),
+    `${entryPoint}/${name}`,
+    `${__dirname}/../${name}`
+  ]
+  for (let p of paths) {
+    if (existsSync(p)) {
+      return p
+    }
   }
   throw new Error("No config.yaml found")
 }
@@ -26,6 +28,12 @@ function lookupConfigFile() {
 export function loadConfig() {
   if (!config) {
     config = yaml.safeLoad(readFileSync(lookupConfigFile()))
+    try {
+      let custom = yaml.safeLoad(readFileSync(lookupConfigFile("config.custom.yaml")))
+      config = merge(config, custom)
+    } catch (e) {
+      debug("Failed to load custom config", e)
+    }
     debug("Currenct config:", config)
   }
 }
