@@ -14,6 +14,7 @@ declare var _default: {
     active(op: any, list: [IResult]): {
         title: string;
         text: string;
+        value: string;
         param: {
             action: string;
             cmd: string;
@@ -23,6 +24,7 @@ declare var _default: {
     close(op: any, list: [IResult]): {
         title: string;
         text: string;
+        value: string;
         param: {
             action: string;
             cmd: string;
@@ -32,6 +34,7 @@ declare var _default: {
     move(op: any, list: [IResult]): {
         title: string;
         text: string;
+        value: string;
         param: {
             action: string;
             cmd: string;
@@ -41,6 +44,7 @@ declare var _default: {
     toWorkspace(op: any, list: [IResult]): {
         title: string;
         text: string;
+        value: string;
         param: {
             action: string;
             cmd: string;

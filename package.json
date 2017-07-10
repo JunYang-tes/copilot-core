@@ -1,6 +1,6 @@
 {
   "name": "copilot-core",
-  "version": "0.0.9",
+  "version": "0.0.11",
   "description": "copilot",
   "license": "MIT",
   "repository": "",
@@ -31,6 +31,7 @@
     "cli-argparser": "^0.0.12",
     "debug": "^2.6.8",
     "deepmerge": "^1.5.0",
+    "fuse.js": "^3.0.5",
     "ini": "^1.3.4",
     "js-yaml": "^3.8.4",
     "scalc": "^2.0.1",

@@ -21,9 +21,9 @@ export default {
   async list() {
     let ret = await utils.exec("wmctrl", "-lp")
     return ret.split("\n")
-      .map(line => line.split(/\s/))
+      .map(line => line.split(/\s+/))
       .map(([id, desktop, pid, machine, ...rest]) => ({
-        id, desktop, pid, machine, title: rest.join(" ")
+        id, desktop, pid, title: rest.join(" ")
       }))
       .map((param: any) => (
         {
@@ -38,6 +38,7 @@ export default {
     return list.map(item => ({
       title: item.title,
       text: `Active ${item.text}`,
+      value: `Active ${item.value}`,
       param: {
         action: "cmd",
         cmd: "xdotool",
@@ -49,6 +50,7 @@ export default {
     return list.map(item => ({
       title: item.title,
       text: `Close ${item.text}`,
+      value: `Close ${item.value}`,
       param: {
         action: "cmd",
         cmd: "xdotool",
@@ -67,6 +69,7 @@ export default {
     return list.map(item => ({
       title: item.title,
       text: `Move to (${x},${y})`,
+      value: `Move to (${x},${y})`,
       param: {
         action: "cmd",
         cmd: "xdotool",
@@ -81,6 +84,7 @@ export default {
     return list.map(item => ({
       title: item.title,
       text: `Move window to workspace ${wsName}`,
+      value: `Move window to workspace ${wsName}`,
       param: {
         action: "cmd",
         cmd: "xdotool",

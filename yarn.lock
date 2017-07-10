@@ -579,6 +579,10 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
 
+fuse.js@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.0.5.tgz#b58d85878802321de94461654947b93af1086727"
+
 generate-function@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/generate-function/-/generate-function-2.0.0.tgz#6858fe7c0969b7d4e9093337647ac79f60dfbe74"
