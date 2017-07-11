@@ -29,7 +29,7 @@ startUp()
     //     }
     //   })
 
-    handle("wins | search google")
+    handle("buildin.process.list")
       .then((ret: IResult[]) => {
         debug(ret)
       })

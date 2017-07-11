@@ -54,7 +54,7 @@ export default {
       return {
         text: file,
         title: p.name,
-        value: `file:///${file}`,
+        value: `file:///${path}/${file}`,
       }
     })
   },
