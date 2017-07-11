@@ -19,7 +19,6 @@ export default {
     }
   },
   async list() {
-    console.log("@wins.list")
     let ret = await utils.exec("wmctrl", "-lp")
     return ret.split("\n")
       .map(line => line.split(/\s+/))

@@ -1,8 +1,5 @@
 import { IResult, IOption } from "../types"
-export function grep(op: { strings: [string] }, list: IResult[]): IResult[] {
-  let test: RegExp = new RegExp(op.strings.join(" "))
-  return list.filter(item => test.test(item.value))
-}
+
 export function head(op: { strings: [string] }, list: IResult[]): IResult[] {
   let n = Number(op.strings[0])
   if (n > list.length) {

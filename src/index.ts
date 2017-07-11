@@ -1,7 +1,14 @@
 import { load } from "./processor/index"
 import { IResult, Processor } from "./types"
 import { parse, IParsedCmd } from "./cmd"
-import { loadConfig, getConfig, getUsing, getAlias } from "./config"
+import {
+  loadConfig,
+  getConfig,
+  getUsing,
+  getAlias,
+  getAliasInfo,
+  getProcessorsInfo,
+} from "./config"
 import action from "./action"
 import { Cache } from "./util/cache"
 const { debug, warn, error } = require("b-logger")("copilot.main")
@@ -57,27 +64,30 @@ function complete(cmd: string) {
   let names = getUsing().map(name => `${name}.${cmd}`.toLowerCase())
   names.push(cmd.toLowerCase())
 
+  let aliasInfo = getAliasInfo()
+
   let alias = Object.keys(getAlias())
     .filter(a => a.startsWith(cmd))
-    .map(alia => ({
-      title: alia,
-      text: "Alia hint",
-      value: alia
-    }))
-
+    .map(alia => aliasInfo[alia])
+  let pInfo = getProcessorsInfo()
   return alias.concat(
     processorNames.filter(name => {
       return names.some(i => name.toLowerCase().startsWith(i))
     })
-      .map(name => ({
-        title: name,
-        text: name,
-        value: name,
-        param: {
-          action: "complete",
-          processor: processors[name]
+      .map(name => {
+        let info = pInfo[name] || {
+          title: name,
+          value: name,
+          text: name
         }
-      }))
+        return {
+          ...info,
+          param: {
+            action: "complete",
+            processor: processors[name]
+          }
+        }
+      })
   )
 }
 
@@ -105,15 +115,15 @@ export async function handle(input: string): Promise<IResult[]> {
         // debug(`Result of ${next.cmd}`, ret)
         cache.set(next.cmd, { cmd: next.original, result: ret })
         return ret
-      } else if (idx === cmds.length - 1) {
+      } else /*if (idx === cmds.length - 1)*/ {
         debug("Complete-")
         return complete(next.cmd)
-      } else {
+      } /*else {
         debug(`No such processor:`, next.cmd)
         throw {
           type: "command-not-found",
           cmd: next.cmd
         }
-      }
+      } */
     }, [])
 }

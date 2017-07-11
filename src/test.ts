@@ -29,7 +29,7 @@ startUp()
     //     }
     //   })
 
-    handle("buildin.process.list")
+    handle("fir")
       .then((ret: IResult[]) => {
         debug(ret)
       })

@@ -1,0 +1,120 @@
+gui: 
+  hot-keys:
+    <alt><space>: show
+    <super>r: run
+    <super>t: tr
+
+using:
+  - buildin
+  - buildin.tools
+  - buildin.apps
+  - buildin.filter
+
+processors : 
+  buildin.apps.init[linux]:
+    launch: gtk-launch
+    icon: \.png$|\.jpg$
+    icons:
+      - ~/.local/share/icons/hicolor/48x48/apps
+      - /usr/share/icons/hicolor/48x48/apps
+      - /usr/share/pixmaps
+    path:
+      # - ~/Desktop
+      - ~/.local/share/applications
+      - /usr/share/applications
+  buildin.win.list: 
+    desc: list all windows
+  buildin.filter.grep:
+    desc: grep input list
+    op:
+      i:
+        help: ignore case
+        action: count
+
+processorsInfo:
+  buildin.apps.list:
+    text: list all apps
+  buildin.apps.launch:
+    text: launch 
+  buildin.tools.head:
+    text: head <number>, select first nth items.
+  buildin.tools.tail:
+    text: tail <number>, select last nth items.
+  buildin.tools.toPipe:
+    text: toPipe --title <title> --value <value> --text <text>, put into pipe
+    options:
+      --title: Display title
+      --value: Value
+      --text: Display text
+  buildin.tools.now:
+    text: Show time
+  buildin.tools.count:
+    text: Count items
+  buildin.win.list:
+    text: list all windows
+  buildin.win.active:
+    text: active window
+  buildin.win.close:
+    text: close window
+  buildin.win.move:
+    text: move x y, move window to (x,y)
+  buildin.process.list:
+    text: list all process
+  buildin.process.kill:
+    text: kill <signal> process
+    options:
+      signal: INT,KILL and so on
+
+  buildin.filter.grep:
+    text: grep [-i] <text>, filter items by RegExp
+    options:
+      -i: ignore cases
+      --field: specify which field to search
+  buildin.filter.search:
+    text: search [--keys <val1,val2>], fuzzy search items
+    options:
+      --keys: specify fields to search
+    
+alias:
+  wins: buildin.win.list
+  first: head 1
+  last: tail 1
+  n: head __arg__ | last
+  a: wins | grep -i __arg__ | buildin.win.active
+  close: wins | buildin.win.close | search __arg__
+  wm: wins | search __arg__ | buildin.win.move
+  run: buildin.apps.list | search __arg__ | buildin.apps.launch
+  kill: buildin.process.list | buildin.process.kill | grep __arg__
+  npmjs: buildin.tools.toPipe --title "Search in npmjs" --text "Search __arg__ in npmjs" --value "https://www.npmjs.com/search?q=__arg__" | buildin.file.open
+  github: buildin.tools.toPipe --title "Search in github" --text "Search __arg__ in github" --value "https://github.com/search?q=__arg__" | buildin.file.open
+  google: buildin.tools.toPipe --title "Search by google" --text "Search __arg__ by google" --value "https://www.google.com.sg/search?q=__arg__" | buildin.file.open
+  bing: buildin.tools.toPipe --title "Search by bing" --text "Search __arg__ by bing"  --value "https://www.bing.com/search?q=__arg__" | buildin.file.open 
+
+
+aliasInfo:
+  wins:
+    text: list all windows
+  first:
+    text: select first item
+  last:
+    text: select last item
+  n:
+    text: n <number> select nth item
+  a:
+    text: a <text>, active window matched by text
+  close:
+    text: close <text>, close window matched by text
+  wm:
+    text: wm <text>, move window to (0,0) matched by text
+  run:
+    text: run <text>, launch app matched by text
+  kill:
+    text: kill <text>, kill process matched by text
+  npmjs:
+    text: npmjs <text>, search in npmjs
+  github:
+    text: github <text>, search in github
+  google:
+    text: google <text>, search by google
+  bing:
+    text: bing <text>, search by bing

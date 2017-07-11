@@ -25,6 +25,60 @@ function lookupConfigFile(name = "config.yaml") {
   throw new Error("No config.yaml found")
 }
 
+function infoFix(keys, info, name = (key) => key) {
+  let alias = config.alias;
+  for (let alia of keys) {
+    if (alia in info) {
+      if (!info[alia].title) {
+        info[alia].title = alia
+      }
+      if (!info[alia].text && !info[alia].value) {
+        info[alia].text = info[alia].value = name(alia)
+      } else if (!info[alia].value) {
+        info[alia].value = info[alia].text
+      } else if (!info[alia].text) {
+        info[alia].text = info[alia].value
+      }
+
+    } else {
+      info[alia] = {
+        title: alia,
+        text: name(alia),
+        value: name(alia)
+      }
+    }
+  }
+}
+
+function aliasInfoFix() {
+  let info = config.aliasInfo;
+  let alias = config.alias;
+  for (let alia of Object.keys(alias)) {
+    if (alia in info) {
+      if (!info[alia].title) {
+        info[alia].title = alia
+      }
+      if (!info[alia].text && !info[alia].value) {
+        info[alia].text = info[alia].value = "Alias hint"
+      } else if (!info[alia].value) {
+        info[alia].value = info[alia].text
+      } else if (!info[alia].text) {
+        info[alia].text = info[alia].value
+      }
+
+    } else {
+      info[alia] = {
+        title: alia,
+        text: "Alias hint",
+        value: "Alias hint",
+      }
+    }
+  }
+}
+function processInfoFix() {
+  infoFix(Object.keys(config.processorsInfo), config.processorsInfo)
+}
+
 export function loadConfig() {
   if (!config) {
     config = yaml.safeLoad(readFileSync(lookupConfigFile()))
@@ -35,6 +89,8 @@ export function loadConfig() {
       debug("Failed to load custom config", e)
     }
     debug("Currenct config:", config)
+    aliasInfoFix();
+    processInfoFix();
   }
 }
 export function getUsing(): string[] {
@@ -49,4 +105,10 @@ export function getConfig(key: string) {
     debug("No config for ", key)
   }
   return {}
+}
+export function getAliasInfo() {
+  return config.aliasInfo
+}
+export function getProcessorsInfo() {
+  return config.processorsInfo
 }
