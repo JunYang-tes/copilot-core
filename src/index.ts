@@ -7,11 +7,15 @@ import { Cache } from "./util/cache"
 const { debug, warn, error } = require("b-logger")("copilot.main")
 const { asyncify } = require("array-asyncify")
 
+interface ICacheItem {
+  result: IResult[],
+  cmd: string
+}
 let processors: {
   [name: string]: Processor
 } = null;
 let processorNames: string[]
-let cache = new Cache<IResult[]>()
+let cache = new Cache<ICacheItem>()
 
 export async function startUp() {
   debug("@startUp")
@@ -87,19 +91,19 @@ export async function handle(input: string): Promise<IResult[]> {
   return asyncify(cmds)
     .reduce(async (pre: any, next: IParsedCmd, idx: number) => {
       debug("Process: ", next)
-      let cachedRet = cache.get(next.original)
-      if (cachedRet && useCache) {
+      let cachedRet = cache.get(next.cmd)
+      if (cachedRet && cachedRet.cmd === next.original && useCache) {
         debug("Using cache for ", next.original)
-        return cachedRet;
+        return cachedRet.result;
       } else {
-        debug("Dont use cache for ", next.original)
+        debug("Dont use cache for ", next.cmd)
         useCache = false
       }
       let p = lookup(next.cmd)
       if (p) {
         ret = await p(next.args || {}, pre)
         // debug(`Result of ${next.cmd}`, ret)
-        cache.set(next.original, ret)
+        cache.set(next.cmd, { cmd: next.original, result: ret })
         return ret
       } else if (idx === cmds.length - 1) {
         debug("Complete-")

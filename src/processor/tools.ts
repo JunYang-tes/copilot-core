@@ -12,6 +12,14 @@ export function head(op: { strings: [string] }, list: IResult[]): IResult[] {
 }
 export function tail(op: { strings: [string] }, list: IResult[]): IResult[] {
   let n = Number(op.strings[0])
+  if (!Number.isFinite(n)) {
+    return [{
+      title: "Tail",
+      text: "Select last nth items",
+      value: "Select last nth items"
+    }]
+  }
+
   if (n > list.length) {
     return [...list]
   }
