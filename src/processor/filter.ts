@@ -36,12 +36,11 @@ export function search(op: IOption, list: IResult[]) {
   };
   const fuse = new Fuse(list, options);
   debug("search ", op.strings.join(" "))
-  let result = fuse.search(op.strings.join(" "));
   if (op.strings.length === 0) {
     return list
   }
+  let result = fuse.search(op.strings.join(" "));
   return result.map(ret => {
-    debug(ret)
     for (let match of ret.matches) {
       let key = match.key
       let orignal = ret.item[key]

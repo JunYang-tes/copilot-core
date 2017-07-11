@@ -3,6 +3,7 @@ import { IResult, Processor } from "./types"
 import { parse, IParsedCmd } from "./cmd"
 import { loadConfig, getConfig, getUsing, getAlias } from "./config"
 import action from "./action"
+import { Cache } from "./util/cache"
 const { debug, warn, error } = require("b-logger")("copilot.main")
 const { asyncify } = require("array-asyncify")
 
@@ -10,6 +11,7 @@ let processors: {
   [name: string]: Processor
 } = null;
 let processorNames: string[]
+let cache = new Cache<IResult[]>()
 
 export async function startUp() {
   debug("@startUp")
@@ -35,6 +37,7 @@ export function run(result: IResult) {
   } else {
     debug("Unknow what to run")
   }
+  cache.clear()
 }
 function lookup(name: string): Processor {
   let using = getUsing()
@@ -80,13 +83,23 @@ export async function handle(input: string): Promise<IResult[]> {
     throw new Error("processors is empty,call startUp before handle")
   }
   let cmds = parse(input)
+  let useCache = true
   return asyncify(cmds)
     .reduce(async (pre: any, next: IParsedCmd, idx: number) => {
       debug("Process: ", next)
+      let cachedRet = cache.get(next.original)
+      if (cachedRet && useCache) {
+        debug("Using cache for ", next.original)
+        return cachedRet;
+      } else {
+        debug("Dont use cache for ", next.original)
+        useCache = false
+      }
       let p = lookup(next.cmd)
       if (p) {
-        ret = await p(next.args || {}, ret)
+        ret = await p(next.args || {}, pre)
         // debug(`Result of ${next.cmd}`, ret)
+        cache.set(next.original, ret)
         return ret
       } else if (idx === cmds.length - 1) {
         debug("Complete-")
@@ -98,5 +111,5 @@ export async function handle(input: string): Promise<IResult[]> {
           cmd: next.cmd
         }
       }
-    }, {})
+    }, [])
 }

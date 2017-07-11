@@ -35,11 +35,12 @@ alias:
   wins: buildin.win.list
   first: head 1
   last: tail 1
-  select: head __arg__ | last
+  n: head __arg__ | last
   a: wins | search __arg__ | buildin.win.active
+  close: wins | buildin.win.close | search __arg__
   wm: wins | search __arg__ | buildin.win.move
   run: buildin.apps.list | search __arg__ | buildin.apps.launch
-  kill: buildin.process.list | grep __arg__ | buildin.process.kill
+  kill: buildin.process.list | buildin.process.kill | grep __arg__
   npmjs: buildin.tools.toPipe --title "Search in npmjs" --text "Search __arg__ in npmjs" --value "https://www.npmjs.com/search?q=__arg__" | buildin.file.open
   github: buildin.tools.toPipe --title "Search in github" --text "Search __arg__ in github" --value "https://github.com/search?q=__arg__" | buildin.file.open
   google: buildin.tools.toPipe --title "Search by google" --text "Search __arg__ by google" --value "https://www.google.com.sg/search?q=__arg__" | buildin.file.open
