@@ -60,3 +60,53 @@ export function calc(op: IOption) {
     }]
   }
 }
+
+export function echo(op: IOption) {
+  let text = op.strings.join(" ")
+  return [{
+    title: text,
+    text,
+    value: text
+  }]
+}
+export function timeout(op: IOption, list: IResult[]) {
+  let timeout = Number(op.min) * 60 * 1000 || Number(op.sec) * 1000 || 0
+  return list.map(item => ({
+    title: "Do after time out",
+    text: `After ${timeout / 1000}s ${item.title}`,
+    value: `After ${timeout / 1000}s ${item.title}`,
+    param: {
+      action: "timeout",
+      timeout,
+      original: item
+    }
+  }))
+}
+
+export function notify(op: IOption, list: IResult[]) {
+  //TODO:cross-platform
+  if (list.length) {
+    return list.map(item => ({
+      ...item,
+      title: "Send notification",
+      param: {
+        action: "cmd",
+        cmd: "notify-send",
+        args: [item.title, item.value]
+      }
+    }))
+  } else {
+    let summary = op.summary || op.strings.join(" ");
+    let body = op.body || "";
+
+    return [{
+      title: `Send notification`,
+      text: summary,
+      param: {
+        action: "cmd",
+        cmd: "notify-send",
+        args: [summary, body]
+      }
+    }]
+  }
+}

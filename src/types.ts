@@ -37,3 +37,7 @@ export interface IConfig {
 export type ICompleteParam = IRunParam & {
   processor: Processor
 }
+export type ITimeoutParam = IRunParam & {
+  timeout: number,
+  original: IResult
+}

@@ -14,7 +14,29 @@ export function lucky() {
   let animals = ["猪", "狗", "猫", "小可爱"]
   return [{
     title: "",
-    text: `Yongyong ${days[(Math.random() * days.length) | 0]} 是 ${animals[(Math.random() * animals.length) | 0]}`
+    text: `雍雍${days[(Math.random() * days.length) | 0]}是${animals[(Math.random() * animals.length) | 0]}`
+  }, {
+    title: "",
+    text: "广告位招租",
+    value: "It's a joke",
   }]
 }
- 
+
+export function who(op: IOption) {
+  let who = op.who || ["雍雍", "雍雍", "雍雍", "雍雍", "GG"]
+  let something = op.something || ["洗碗"]
+  if (op.t) {
+    return [{
+      title: "",
+      text: `今天${who[(Math.random() * who.length) | 0]}${something}`
+    }, {
+      title: "",
+      text: "广告位招租",
+      value: "It's a joke",
+    }]
+  } else {
+    return [{
+      text: "Who will go to do ? trigger by -t"
+    }]
+  }
+}

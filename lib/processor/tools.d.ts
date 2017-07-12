@@ -27,3 +27,27 @@ export declare function calc(op: IOption): {
     title: string;
     text: string;
 }[];
+export declare function echo(op: IOption): {
+    title: string;
+    text: string;
+    value: string;
+}[];
+export declare function timeout(op: IOption, list: IResult[]): {
+    title: string;
+    text: string;
+    value: string;
+    param: {
+        action: string;
+        timeout: number;
+        original: IResult;
+    };
+}[];
+export declare function notify(op: IOption, list: IResult[]): {
+    title: string;
+    text: any;
+    param: {
+        action: string;
+        cmd: string;
+        args: any[];
+    };
+}[];

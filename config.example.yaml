@@ -64,6 +64,15 @@ processorsInfo:
     text: kill <signal> process
     options:
       signal: INT,KILL and so on
+  buildin.other.who:
+    icon: funny
+    text: who --who p1 p2 ... --something , who doing something
+    args:
+      who:
+        type: list
+      something:
+        type: string
+      
 
   buildin.filter.grep:
     text: grep [-i] <text>, filter items by RegExp
@@ -82,9 +91,10 @@ alias:
   n: head __arg__ | last
   a: wins | grep -i __arg__ | buildin.win.active
   close: wins | buildin.win.close | search __arg__
-  wm: wins | search __arg__ | buildin.win.move
+  wm: wins | search __arg__ | buildin.win.move __arg0__ __arg1__
   run: buildin.apps.list | search __arg__ | buildin.apps.launch
-  kill: buildin.process.list | buildin.process.kill | grep __arg__
+  callme: buildin.tools.toPipe --title "Call me to do ..." --text __arg__ --value __arg__ | buildin.tools.notify | buildin.tools.timeout __arg0__ __arg1__
+  kill: buildin.process.list | buildin.process.kill | grep __arg_
   npmjs: buildin.tools.toPipe --title "Search in npmjs" --text "Search __arg__ in npmjs" --value "https://www.npmjs.com/search?q=__arg__" | buildin.file.open
   github: buildin.tools.toPipe --title "Search in github" --text "Search __arg__ in github" --value "https://github.com/search?q=__arg__" | buildin.file.open
   google: buildin.tools.toPipe --title "Search by google" --text "Search __arg__ by google" --value "https://www.google.com.sg/search?q=__arg__" | buildin.file.open
@@ -108,6 +118,8 @@ aliasInfo:
     text: wm <text>, move window to (0,0) matched by text
   run:
     text: run <text>, launch app matched by text
+  callme:
+    text: callme <[--min|--sec] number> <something> , Call me to do something.
   kill:
     text: kill <text>, kill process matched by text
   npmjs:
