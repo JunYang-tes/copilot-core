@@ -62,6 +62,7 @@ function lookup(name: string): Processor {
   }
   return processors[fullname]
 }
+
 function complete(cmd: string) {
   let names = getUsing().map(name => `${name}.${cmd}`.toLowerCase())
   names.push(cmd.toLowerCase())
@@ -92,6 +93,25 @@ function complete(cmd: string) {
       })
   )
 }
+function lookUpIcon(cmd) {
+  let aliasInfo = getAliasInfo()
+  if (aliasInfo[cmd] && aliasInfo[cmd].icon) {
+    return aliasInfo[cmd].icon
+  }
+  let processorInfo = getProcessorsInfo()
+
+  let using = getUsing()
+  let fullname = cmd
+  while (!(fullname in processorInfo) && using.length) {
+    fullname = `${using.pop()}.${cmd}`
+    debug(`lookupIcon next ${fullname}`)
+  }
+
+  if (processorInfo[fullname] && processorInfo[fullname].icon) {
+    return processorInfo[fullname].icon
+  }
+  return cmd
+}
 
 export async function handle(input: string): Promise<IResult[]> {
   let ret: IResult[] = []
@@ -116,7 +136,7 @@ export async function handle(input: string): Promise<IResult[]> {
         ret = (await p(next.args || {}, pre))
           .map(item => ({
             ...item,
-            icon: item.icon || next.cmd
+            icon: item.icon || lookUpIcon(next.cmd)
           }))
         // debug(`Result of ${next.cmd}`, ret)
         cache.set(next.cmd, { cmd: next.original, result: ret })
