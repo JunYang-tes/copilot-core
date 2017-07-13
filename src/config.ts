@@ -29,6 +29,9 @@ function infoFix(keys, info, name = (key) => key) {
   let alias = config.alias;
   for (let alia of keys) {
     if (alia in info) {
+      let item = info[alia]
+      item.icon = item.icon || alia
+
       if (!info[alia].title) {
         info[alia].title = alia
       }
@@ -39,41 +42,42 @@ function infoFix(keys, info, name = (key) => key) {
       } else if (!info[alia].text) {
         info[alia].text = info[alia].value
       }
-
     } else {
       info[alia] = {
         title: alia,
         text: name(alia),
-        value: name(alia)
+        value: name(alia),
+        icon: alia
       }
     }
   }
 }
 
 function aliasInfoFix() {
-  let info = config.aliasInfo;
-  let alias = config.alias;
-  for (let alia of Object.keys(alias)) {
-    if (alia in info) {
-      if (!info[alia].title) {
-        info[alia].title = alia
-      }
-      if (!info[alia].text && !info[alia].value) {
-        info[alia].text = info[alia].value = "Alias hint"
-      } else if (!info[alia].value) {
-        info[alia].value = info[alia].text
-      } else if (!info[alia].text) {
-        info[alia].text = info[alia].value
-      }
+  infoFix(Object.keys(config.alias), config.aliasInfo)
+  // let info = config.aliasInfo;
+  // let alias = config.alias;
+  // for (let alia of Object.keys(alias)) {
+  //   if (alia in info) {
+  //     if (!info[alia].title) {
+  //       info[alia].title = alia
+  //     }
+  //     if (!info[alia].text && !info[alia].value) {
+  //       info[alia].text = info[alia].value = "Alias hint"
+  //     } else if (!info[alia].value) {
+  //       info[alia].value = info[alia].text
+  //     } else if (!info[alia].text) {
+  //       info[alia].text = info[alia].value
+  //     }
 
-    } else {
-      info[alia] = {
-        title: alia,
-        text: "Alias hint",
-        value: "Alias hint",
-      }
-    }
-  }
+  //   } else {
+  //     info[alia] = {
+  //       title: alia,
+  //       text: "Alias hint",
+  //       value: "Alias hint",
+  //     }
+  //   }
+  // }
 }
 function processInfoFix() {
   infoFix(Object.keys(config.processorsInfo), config.processorsInfo)

@@ -1,6 +1,7 @@
 import { load } from "./processor/index"
 import { IResult, Processor } from "./types"
 import { parse, IParsedCmd } from "./cmd"
+import { IconHelper } from "./icon"
 import {
   loadConfig,
   getConfig,
@@ -13,6 +14,7 @@ import action from "./action"
 import { Cache } from "./util/cache"
 const { debug, warn, error } = require("b-logger")("copilot.main")
 const { asyncify } = require("array-asyncify")
+const iconHelper = new IconHelper([`${__dirname}/../icon`])
 
 interface ICacheItem {
   result: IResult[],
@@ -111,7 +113,11 @@ export async function handle(input: string): Promise<IResult[]> {
       }
       let p = lookup(next.cmd)
       if (p) {
-        ret = await p(next.args || {}, pre)
+        ret = (await p(next.args || {}, pre))
+          .map(item => ({
+            ...item,
+            icon: item.icon || next.cmd
+          }))
         // debug(`Result of ${next.cmd}`, ret)
         cache.set(next.cmd, { cmd: next.original, result: ret })
         return ret
@@ -126,4 +132,8 @@ export async function handle(input: string): Promise<IResult[]> {
         }
       } */
     }, [])
+    .map(item => ({
+      ...item,
+      icon: iconHelper.fixIcon(item.icon)
+    }))
 }

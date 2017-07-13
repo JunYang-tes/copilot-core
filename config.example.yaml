@@ -31,6 +31,16 @@ processors :
         help: ignore case
         action: count
 
+# processorsInfo & aliasInfo description
+# Structure
+# [name]:
+#   icon: name or path of a image file (letter and digital and dot only)
+#   text: what text to show
+#   value what value to use (in search or grep,if missed using text as value)
+#   options:  #options help info
+#     [op]:[value]
+#   args:  # cli-argparser's option config
+
 processorsInfo:
   buildin.apps.list:
     text: list all apps
@@ -64,8 +74,12 @@ processorsInfo:
     text: kill <signal> process
     options:
       signal: INT,KILL and so on
+  buildin.other.lucky:
+    icon: buildin.funny
+    text: Does YY lucky?
+
   buildin.other.who:
-    icon: funny
+    icon: buildin.funny
     text: who --who p1 p2 ... --something , who doing something
     args:
       who:

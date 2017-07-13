@@ -11,6 +11,6 @@ export async function parse(path: string): Promise<IDesktopEntry> {
   let entry = (ini.parse(content))
   return {
     name: entry["Desktop Entry"].Name,
-    icon: entry["Desktop Entry"].Icon
+    icon: entry["Desktop Entry"].Icon || ""
   }
 }

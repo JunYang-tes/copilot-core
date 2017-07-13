@@ -58,7 +58,7 @@ export default {
             let result: IResult = {
               title: entry.name,
               text: entry.name,
-              icon: icons[entry.icon],
+              icon: entry.icon.startsWith("/") ? entry.icon :  icons[entry.icon],
               value: entry.name,
               param: {
                 entryName: entryFile,

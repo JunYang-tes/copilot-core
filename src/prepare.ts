@@ -46,8 +46,16 @@ export function prepare(cmd: string): IPrepared[] {
     for (let e of ret) {
       if (e.cmd in alias) {
         e.cmd = alias[e.cmd]
+        let args = speicalSplit(e.rest.trim());
+        e.cmd = e.cmd.replace(/__arg[0-9]+__/g, (m) => {
+          if (args.length) {
+            return args.shift();
+          }
+          return m;
+        })
+
         if (e.cmd.includes("__arg__")) {
-          e.cmd = e.cmd.replace(/__arg__/g, e.rest.trim())
+          e.cmd = e.cmd.replace(/__arg__/g, args.join(" "))
           e.rest = ""
         }
         flag = true
@@ -62,4 +70,47 @@ export function prepare(cmd: string): IPrepared[] {
   }
   debug(`Convert ${cmd} to \n`, ret)
   return ret
+}
+function speicalSplit(str: string, by: RegExp = /\s/) {
+  //TODO:consider escape
+  let parts = []
+  let currentPart = ""
+  let inStr = 1;
+  let inSingleQuotedStr = 2;
+  let state = 0;
+  let init = 0;
+
+  for (let i = 0; i < str.length; i++) {
+    let char = str.charAt(i)
+    switch (state) {
+      case inStr:
+        if (char === '"') {
+          state = init
+        }
+        currentPart += char
+        break
+      case inSingleQuotedStr:
+        if (char === "'") {
+          state = init
+        }
+        currentPart += char
+        break
+      case init:
+        if (char === '"') {
+          state = inStr;
+        } else if (char === "'") {
+          state = inSingleQuotedStr
+        } else if (by.test(char)) {
+          parts.push(currentPart)
+          currentPart = ""
+          continue
+        }
+        currentPart += char
+    }
+  }
+
+  if (currentPart) {
+    parts.push(currentPart)
+  }
+  return parts;
 }

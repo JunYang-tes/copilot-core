@@ -23,46 +23,21 @@ export function reboot() {
   }]
 }
 
-a => [[], [], []]
-
-function a(arr) {
-  if (arr.length === 1) {
-    return [arr]
-  } else {
-    let ret = [];
-    for (let i = 0; i < arr.length; i++) {
-      let tmp = a(arr.slice(0, i).concat(arr.slice(i + 1)))
-      for (let t of tmp) t.unshift(arr[i])
-      ret.push(...tmp)
-    }
-    return ret;
-  }
+export function mute() {
+  return [{
+    title: "Mute",
+    text: "Close audio output"
+  }]
 }
 
-function Cn(arr, n) {
-  if (n === 1)
-    return arr
-  else {
-    let ret = []
-    for (let i = 0; i < n; i++) {
-      ret.push(arr[i])
-      ret.push(...Cn(arr.slice(0, i).concat(arr.slice(i + 1)), n - 1))
-    }
-  }
+export function ip() {
+
 }
 
-function c(arr) {
-  let ret = arr;
-  for (let i = 2; i < arr.length; i++) {
-    ret.push(...Cn(arr, i))
-  }
+export function wifiOff() {
+
 }
 
+export function wifiOn() {
 
-
-A = { A }
-AB = { A, B }
-
-ABC = { A, B, C, AB, AC, BC, ABC }
-ABCD =
-    = { A, B, C, D, AB, AC, AD, BC, BD, CD, ABC, ABD, ACD, ABCD }
+}
