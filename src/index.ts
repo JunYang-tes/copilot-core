@@ -104,7 +104,6 @@ function lookUpIcon(cmd) {
   let fullname = cmd
   while (!(fullname in processorInfo) && using.length) {
     fullname = `${using.pop()}.${cmd}`
-    debug(`lookupIcon next ${fullname}`)
   }
 
   if (processorInfo[fullname] && processorInfo[fullname].icon) {

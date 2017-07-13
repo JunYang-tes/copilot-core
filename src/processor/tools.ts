@@ -38,6 +38,15 @@ export function now() {
   }]
 }
 export function toPipe(op: IOption) {
+  if (op.strings.length === 1) {
+    let text = op.strings[0]
+    return [{
+      title: text,
+      text,
+      value: text
+    }]
+  }
+
   return [{
     ...op
   }]

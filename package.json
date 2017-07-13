@@ -1,6 +1,6 @@
 {
   "name": "copilot-core",
-  "version": "0.0.17",
+  "version": "0.0.19",
   "description": "copilot",
   "license": "MIT",
   "repository": "",
@@ -36,6 +36,7 @@
     "ini": "^1.3.4",
     "js-yaml": "^3.8.4",
     "scalc": "^2.0.1",
+    "tldr": "^2.0.1",
     "twss": "^0.1.6"
   },
   "devDependencies": {

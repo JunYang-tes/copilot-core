@@ -18,6 +18,10 @@ export declare function now(): {
 export declare function toPipe(op: IOption): {
     [name: string]: any;
     strings: string[];
+}[] | {
+    title: string;
+    text: string;
+    value: string;
 }[];
 export declare function calc(op: IOption): {
     title: any;
