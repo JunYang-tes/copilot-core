@@ -4,7 +4,7 @@ const { debug } = require("b-logger")("copilot.icon")
 export class IconHelper {
   private icons: { [name: string]: string }
   private iconNameRule: RegExp
-  constructor(path: string[], img = /\.(jpg|png|gif)$/, iconNameRule = /[a-zA-Z0-9]+(\.[a-zA-Z0-9]*)*/) {
+  constructor(path: string[], img = /\.(jpg|png|gif)$/, iconNameRule = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]*)*$/) {
     this.iconNameRule = iconNameRule
     this.icons = {}
     for (let p of path) {
@@ -19,7 +19,7 @@ export class IconHelper {
   public fixIcon(icon: string) {
     icon = icon || "buildin.default"
     if (this.iconNameRule.test(icon)) {
-      return this.icons[icon] || this.icons["buildin.default"]
+      icon = this.icons[icon] || this.icons["buildin.default"]
     }
     if (icon.startsWith("/")) {
       return `file:///${icon}`
