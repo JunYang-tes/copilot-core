@@ -24,7 +24,7 @@ export declare type IOption = {
 } & {
     [name: string]: any;
 };
-export declare type action = (param: IRunParam) => void;
+export declare type action = (param: IRunParam, item?: IResult) => void;
 export interface IRunParam {
     name: string;
 }
@@ -43,4 +43,7 @@ export declare type ICompleteParam = IRunParam & {
 export declare type ITimeoutParam = IRunParam & {
     timeout: number;
     original: IResult;
+};
+export declare type ICopyParam = IRunParam & {
+    field: string;
 };

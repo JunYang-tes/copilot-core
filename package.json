@@ -1,6 +1,6 @@
 {
   "name": "copilot-core",
-  "version": "0.0.20",
+  "version": "0.0.23",
   "description": "copilot",
   "license": "MIT",
   "repository": "",
@@ -30,6 +30,7 @@
     "array-asyncify": "^0.0.7",
     "b-logger": "^0.0.4",
     "cli-argparser": "^0.0.12",
+    "clipboardy": "^1.1.4",
     "debug": "^2.6.8",
     "deepmerge": "^1.5.0",
     "fuse.js": "^3.0.5",

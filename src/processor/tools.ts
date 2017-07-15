@@ -60,7 +60,11 @@ export function calc(op: IOption) {
     return [{
       title: result,
       text: `${exp} = ${result}`,
-      value: ""
+      value: `${exp} = ${result}`,
+      param: {
+        action: "copy",
+        field: "title"
+      }
     }]
   } else {
     return [{
@@ -118,4 +122,15 @@ export function notify(op: IOption, list: IResult[]) {
       }
     }]
   }
+}
+
+export function copy(op: IOption, list: IResult[]) {
+  let field = op.strings[0] || "value"
+  return list.map(item => ({
+    ...item,
+    param: {
+      action: "copy",
+      field
+    }
+  }))
 }

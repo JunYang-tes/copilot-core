@@ -46,9 +46,10 @@ export async function startUp() {
 export function run(result: IResult) {
   if (result.param && ("action" in result.param)) {
     debug("run:", result.param)
-    action[result.param.action](result.param)
+    action[result.param.action](result.param, result)
   } else {
-    debug("Unknow what to run")
+    debug("Unknow what to run,fallback to copy")
+    action.copy(null, result)
   }
   cache.clear()
 }

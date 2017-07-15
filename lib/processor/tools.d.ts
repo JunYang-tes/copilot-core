@@ -27,6 +27,10 @@ export declare function calc(op: IOption): {
     title: any;
     text: string;
     value: string;
+    param: {
+        action: string;
+        field: string;
+    };
 }[] | {
     title: string;
     text: string;
@@ -54,4 +58,14 @@ export declare function notify(op: IOption, list: IResult[]): {
         cmd: string;
         args: any[];
     };
+}[];
+export declare function copy(op: IOption, list: IResult[]): {
+    param: {
+        action: string;
+        field: string;
+    };
+    title: string;
+    text: string;
+    value: string;
+    icon?: string;
 }[];

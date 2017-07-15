@@ -23,7 +23,7 @@ export type IOption = {
 } & {
     [name: string]: any
   }
-export type action = (param: IRunParam) => void
+export type action = (param: IRunParam, item?: IResult) => void
 export interface IRunParam {
   name: string
 }
@@ -40,4 +40,7 @@ export type ICompleteParam = IRunParam & {
 export type ITimeoutParam = IRunParam & {
   timeout: number,
   original: IResult
+}
+export type ICopyParam = IRunParam & {
+  field: string
 }
