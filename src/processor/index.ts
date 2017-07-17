@@ -5,6 +5,7 @@ import * as util from "util"
 import * as path from "path"
 import { Check, InvalidResult, Processor, ProcessorName } from "../types"
 import { loadConfig, getConfig } from "../config"
+import { getServices } from "../services"
 
 const { asyncify } = require("array-asyncify")
 const { debug, warn, error } = require("b-logger")("processor.loader")
@@ -25,8 +26,33 @@ async function parse(
     fileName,
     funName }: { fileName: string, funName: string }) => string): Promise<IParsed> {
   const processors: { [name: string]: Processor } = {}
+  //inject services and config
+  let param = {
+    cfg: getConfig(name({ fileName, funName: "init" })),
+    services: {}
+  }
+  if (obj.declare && util.isFunction(obj.declare)) {
+    let declare = obj.declare()
+    declare.params = declare.params || {}
+    debug("declared dependencies:", declare)
+    if (declare.services) {
+      param.services = declare.services
+        .map(serviceName => {
+          let serviceParam = declare.params[serviceName] || {}
+          return {
+            key: serviceName,
+            value: getServices(serviceName, {
+              ...serviceName,
+              namespace: name({ fileName, funName: "" })
+            })
+          }
+        })
+        .reduce((ret, next) => (ret[next.key] = next.value, ret), {})
+    }
+  }
+
   if (obj.init && util.isFunction(obj.init)) {
-    await obj.init(getConfig(name({ fileName, funName: "init" })))
+    await obj.init(param);//getConfig(name({ fileName, funName: "init" })))
   }
   if (obj.check && util.isFunction(obj.check)) {
     const check = obj.check as Check
@@ -38,7 +64,7 @@ async function parse(
           .filter((key) => key !== "check" && !/_$/.test(key) && invalid.every(e => e.key !== key))
           .map(key => obj[key].bind(obj))
           .forEach(fun => {
-            processors[name({ funName: fun.name, fileName })] = fun
+            processors[name({ funName: fun.name, fileName }).replace(/\.default$/, "")] = fun
           })
         return {
           processors,
@@ -72,7 +98,7 @@ async function parse(
       // .map(key => obj[key].bind(obj))
       .forEach(key => {
         let fun = obj[key]
-        processors[name({ funName: key, fileName })] = fun.bind(obj)
+        processors[name({ funName: key, fileName }).replace(/\.default$/, "")] = fun.bind(obj)
       })
   }
   return { processors }

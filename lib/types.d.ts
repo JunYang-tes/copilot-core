@@ -12,12 +12,33 @@ export interface InvalidResult {
     key: string;
     msg: string;
 }
+export declare type IServiceParam = {
+    namespace: string;
+} & {
+    [name: string]: any;
+};
 export interface IResult {
     title: string;
     text: string;
     value: string;
     icon?: string;
     param?: any;
+}
+export interface IStore {
+    set(key: string): Promise<void>;
+    get(key: string): Promise<string>;
+    setJson(key: string, value: any): Promise<void>;
+    getJson(key: string): Promise<any>;
+}
+export interface ICache {
+    get(key: string): Promise<any>;
+    set(key: string, value: any): void;
+}
+export interface IProcessInitParam {
+    cfg: IConfig;
+    services: {
+        store: IStore;
+    };
 }
 export declare type IOption = {
     strings: string[];

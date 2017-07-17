@@ -23,6 +23,16 @@ export function reboot() {
   }]
 }
 
+export function xkill() {
+  return [{
+    title: "Kill",
+    param: {
+      action: "cmd",
+      cmd: "xkill"
+    }
+  }]
+}
+
 export function mute() {
   return [{
     title: "Mute",

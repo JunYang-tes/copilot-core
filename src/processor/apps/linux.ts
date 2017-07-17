@@ -12,11 +12,15 @@ export interface IConfig {
   launch: string
   icon: string
 }
+export interface InitParam {
+  cfg: IConfig
+}
+
 export default {
   // async check() {
 
   // },
-  async init(cfg: IConfig) {
+  async init({ cfg }: InitParam) {
     debug("Init apps:", cfg)
     this.path = cfg.path
     this.cfg = cfg
@@ -58,7 +62,7 @@ export default {
             let result: IResult = {
               title: entry.name,
               text: entry.name,
-              icon: entry.icon.startsWith("/") ? entry.icon :  icons[entry.icon],
+              icon: entry.icon.startsWith("/") ? entry.icon : icons[entry.icon],
               value: entry.name,
               param: {
                 entryName: entryFile,

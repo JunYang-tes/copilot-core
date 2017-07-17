@@ -77,7 +77,6 @@ processorsInfo:
   buildin.other.lucky:
     icon: buildin.funny
     text: Does YY lucky?
-
   buildin.other.who:
     icon: buildin.funny
     text: who --who p1 p2 ... --something , who doing something
@@ -86,8 +85,6 @@ processorsInfo:
         type: list
       something:
         type: string
-      
-
   buildin.filter.grep:
     text: grep [-i] <text>, filter items by RegExp
     options:
@@ -97,6 +94,12 @@ processorsInfo:
     text: search [--keys <val1,val2>], fuzzy search items
     options:
       --keys: specify fields to search
+  buildin.tools.copy:
+    text: copy [value|--field field] copy field to clipboard
+    options:
+      field: title , value , text
+
+
     
 alias:
   wins: buildin.win.list
@@ -140,7 +143,10 @@ aliasInfo:
     text: npmjs <text>, search in npmjs
   github:
     text: github <text>, search in github
+    icon: buildin.github
   google:
     text: google <text>, search by google
+    icon: buildin.google
   bing:
     text: bing <text>, search by bing
+    icon: buildin.bing

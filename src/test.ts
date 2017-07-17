@@ -29,7 +29,7 @@ startUp()
     //     }
     //   })
 
-    handle("buildin.tldr.show tar")
+    handle("bin")
       .then((ret: IResult[]) => {
         debug(ret)
       })

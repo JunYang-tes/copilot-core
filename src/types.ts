@@ -6,6 +6,9 @@ export interface InvalidResult {
   key: string,
   msg: string
 }
+export type IServiceParam = {
+  namespace: string
+} & { [name: string]: any }
 export interface IResult {
   //formatted title to show
   title: string,
@@ -17,6 +20,23 @@ export interface IResult {
   // action: string | Action,
   // type: string,
   param?: any
+}
+export interface IStore {
+  set(key: string): Promise<void>,
+  get(key: string): Promise<string>,
+  setJson(key: string, value: any): Promise<void>,
+  getJson(key: string): Promise<any>
+}
+export interface ICache {
+  get(key: string): Promise<any>
+  set(key: string, value: any): void
+}
+
+export interface IProcessInitParam {
+  cfg: IConfig,
+  services: {
+    store: IStore
+  }
 }
 export type IOption = {
   strings: string[]
