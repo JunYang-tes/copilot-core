@@ -18,9 +18,9 @@ export declare type IServiceParam = {
     [name: string]: any;
 };
 export interface IResult {
-    title: string;
+    title?: string;
     text: string;
-    value: string;
+    value?: string;
     icon?: string;
     param?: any;
 }

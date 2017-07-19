@@ -64,8 +64,18 @@ export declare function copy(op: IOption, list: IResult[]): {
         action: string;
         field: string;
     };
-    title: string;
+    title?: string;
     text: string;
-    value: string;
+    value?: string;
     icon?: string;
+}[];
+export declare function cmd(op: IOption): {
+    title: any;
+    text: any;
+    value: any;
+    param: {
+        action: string;
+        cmd: any;
+        args: string[];
+    };
 }[];

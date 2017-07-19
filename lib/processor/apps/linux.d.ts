@@ -6,8 +6,11 @@ export interface IConfig {
     launch: string;
     icon: string;
 }
+export interface InitParam {
+    cfg: IConfig;
+}
 declare var _default: {
-    init(cfg: IConfig): Promise<void>;
+    init({cfg}: InitParam): Promise<void>;
     list(): any;
     launch(op: IOption, list: IResult[]): {
         text: string;
@@ -16,8 +19,8 @@ declare var _default: {
             cmd: any;
             args: any[];
         };
-        title: string;
-        value: string;
+        title?: string;
+        value?: string;
         icon?: string;
     }[];
 };

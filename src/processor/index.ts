@@ -28,7 +28,7 @@ async function parse(
   const processors: { [name: string]: Processor } = {}
   //inject services and config
   let param = {
-    cfg: getConfig(name({ fileName, funName: "init" })),
+    cfg: getConfig(name({ fileName, funName: "" }).replace(/\.$/, "")),
     services: {}
   }
   if (obj.declare && util.isFunction(obj.declare)) {
@@ -42,7 +42,7 @@ async function parse(
           return {
             key: serviceName,
             value: getServices(serviceName, {
-              ...serviceName,
+              ...serviceParam,
               namespace: name({ fileName, funName: "" })
             })
           }

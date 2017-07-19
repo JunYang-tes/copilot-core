@@ -134,3 +134,16 @@ export function copy(op: IOption, list: IResult[]) {
     }
   }))
 }
+
+export function cmd(op: IOption) {
+  return [{
+    title: op.title,
+    text: op.text,
+    value: op.value,
+    param: {
+      action: "cmd",
+      cmd: op.cmd,
+      args: op.strings
+    }
+  }]
+}

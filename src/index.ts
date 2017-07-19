@@ -3,7 +3,6 @@ import { IResult, Processor } from "./types"
 import { parse, IParsedCmd } from "./cmd"
 import { IconHelper } from "./icon"
 import {
-  loadConfig,
   getConfig,
   getUsing,
   getAlias,
@@ -28,12 +27,6 @@ let cache = new Cache<ICacheItem>()
 
 export async function startUp() {
   debug("@startUp")
-  try {
-    loadConfig()
-  } catch (e) {
-    error(`Failed to load config:`, e)
-  }
-
   let loaded = await load({})
   processors = loaded.processors
   debug("Processors:", processors)
@@ -53,7 +46,7 @@ export function run(result: IResult) {
   }
   cache.clear()
 }
-function lookup(name: string): Processor {
+function lookup(name: string): { processor: Processor, fullname: string } {
   let using = getUsing()
   let fullname = name
   debug(`Locakup ${name}`)
@@ -61,7 +54,10 @@ function lookup(name: string): Processor {
     fullname = `${using.pop()}.${name}`
     debug(`next ${fullname}`)
   }
-  return processors[fullname]
+  return {
+    fullname,
+    processor: processors[fullname]
+  }
 }
 
 function complete(cmd: string) {
@@ -82,7 +78,8 @@ function complete(cmd: string) {
         let info = pInfo[name] || {
           title: name,
           value: name,
-          text: name
+          text: name,
+          icon: name
         }
         return {
           ...info,
@@ -110,7 +107,7 @@ function lookUpIcon(cmd) {
   if (processorInfo[fullname] && processorInfo[fullname].icon) {
     return processorInfo[fullname].icon
   }
-  return cmd
+  return fullname in processorInfo ? fullname : cmd
 }
 
 export async function handle(input: string): Promise<IResult[]> {
@@ -131,12 +128,12 @@ export async function handle(input: string): Promise<IResult[]> {
         debug("Dont use cache for ", next.cmd)
         useCache = false
       }
-      let p = lookup(next.cmd)
-      if (p) {
-        ret = (await p(next.args || {}, pre))
+      let { processor, fullname } = lookup(next.cmd)
+      if (processor) {
+        ret = (await processor(next.args || {}, pre))
           .map(item => ({
             ...item,
-            icon: item.icon || lookUpIcon(next.cmd)
+            icon: item.icon || fullname
           }))
         // debug(`Result of ${next.cmd}`, ret)
         cache.set(next.cmd, { cmd: next.original, result: ret })

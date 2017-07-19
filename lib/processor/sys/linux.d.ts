@@ -18,6 +18,13 @@ export declare function reboot(): {
         args: string[];
     };
 }[];
+export declare function xkill(): {
+    title: string;
+    param: {
+        action: string;
+        cmd: string;
+    };
+}[];
 export declare function mute(): {
     title: string;
     text: string;

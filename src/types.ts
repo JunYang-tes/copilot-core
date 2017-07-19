@@ -11,11 +11,11 @@ export type IServiceParam = {
 } & { [name: string]: any }
 export interface IResult {
   //formatted title to show
-  title: string,
+  title?: string,
   //formatted text to show
   text: string,
   //value of Result
-  value: string,
+  value?: string,
   icon?: string,
   // action: string | Action,
   // type: string,

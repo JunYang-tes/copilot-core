@@ -6,9 +6,9 @@ const { debug, error } = require("b-logger")("copilot.test")
 //   input: process.stdin,
 //   output: process.stdout
 // })
-
+import { Store } from "./services/Store"
 startUp()
-  .then(() => {
+  .then(async () => {
     // handle("gcolor")
     //   .then((ret: IResult[]) => {
     //     debug("========", ret)
@@ -29,10 +29,20 @@ startUp()
     //     }
     //   })
 
-    handle("bin")
+    handle("buildin.dict.iciba 你好$")
       .then((ret: IResult[]) => {
+        handle("buildin.dict.iciba 你好$")
+          .then(console.log)
+          .catch(console.error)
         debug(ret)
       })
+
+
+    let store: Store = new Store({ namespace: "mystore" })
+    debug("setJSON")
+    await store.setJson("hello", { a: 1, b: 2 })
+    debug("getJSON")
+    debug(await store.getJson("hello"))
     // handle("a google")
     //   .then((ret: IResult[]) => {
     //     ret.forEach(debug)
@@ -54,5 +64,5 @@ startUp()
     // })
   })
   .catch(e => {
-
+    debug(e)
   })
