@@ -10,8 +10,12 @@ using:
   - buildin.apps
   - buildin.filter
 
+services:
+  store:
+    file: ~/.config/copilot/store.db
+
 processors : 
-  buildin.apps.init[linux]:
+  buildin.apps[linux]:
     launch: gtk-launch
     icon: \.png$|\.jpg$
     icons:
@@ -30,6 +34,15 @@ processors :
       i:
         help: ignore case
         action: count
+  buildin.dict.oxford:
+    id: "c211cf7d"
+    key: "6c9e5777937c34a6867d9ec6ed32aaf9"
+    trigger: $
+    url:  https://od-api.oxforddictionaries.com/api/v1/entries/en/{word}
+  buildin.dict.iciba:
+    key: "1EB6995440B5FFC5BA2343BAD34D32F6"
+    trigger: $
+    url: http://dict-co.iciba.com/api/dictionary.php?w={word}&type=json&key=1EB6995440B5FFC5BA2343BAD34D32F6
 
 # processorsInfo & aliasInfo description
 # Structure
@@ -98,6 +111,12 @@ processorsInfo:
     text: copy [value|--field field] copy field to clipboard
     options:
       field: title , value , text
+  buildin.dict.oxford:
+    text: oxford dictionary
+  buildin.tools.cmd:
+    title: Execute a cmd
+    text: cmd --title <title> --text <text> --value <value> --cmd <cmd> args,
+    
 
 
     

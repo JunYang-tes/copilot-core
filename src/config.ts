@@ -6,8 +6,22 @@ const merge = require("deepmerge")
 const { debug } = require("b-logger")("copilot.config")
 const yaml = require("js-yaml")
 let config: any = null
+function loadConfig() {
+  if (!config) {
+    config = yaml.safeLoad(readFileSync(lookupConfigFile()))
+    try {
+      let custom = yaml.safeLoad(readFileSync(lookupConfigFile("config.custom.yaml")))
+      config = merge(config, custom)
+    } catch (e) {
+      debug("Failed to load custom config", e)
+    }
+    debug("Currenct config:", config)
+    aliasInfoFix();
+    processInfoFix();
+  }
+}
+loadConfig()
 export function getAlias(): { [alias: string]: string } {
-
   return config.alias
 }
 function lookupConfigFile(name = "config.yaml") {
@@ -83,20 +97,7 @@ function processInfoFix() {
   infoFix(Object.keys(config.processorsInfo), config.processorsInfo)
 }
 
-export function loadConfig() {
-  if (!config) {
-    config = yaml.safeLoad(readFileSync(lookupConfigFile()))
-    try {
-      let custom = yaml.safeLoad(readFileSync(lookupConfigFile("config.custom.yaml")))
-      config = merge(config, custom)
-    } catch (e) {
-      debug("Failed to load custom config", e)
-    }
-    debug("Currenct config:", config)
-    aliasInfoFix();
-    processInfoFix();
-  }
-}
+
 export function getUsing(): string[] {
   return Array.from<string>(config.using || [])
 }
@@ -115,4 +116,7 @@ export function getAliasInfo() {
 }
 export function getProcessorsInfo() {
   return config.processorsInfo
+}
+export function getServices() {
+  return config.services
 }

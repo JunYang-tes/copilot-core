@@ -18,7 +18,7 @@ export class Cache {
   }
   public async get(key: string): Promise<any> {
     let value = this.cache.get(key)
-    if (value === null) {
+    if (value === null || value === undefined) {
       value = await this.loader.load(key)
       if (value != null && value !== undefined) {
         this.cache.set(key, value)

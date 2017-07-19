@@ -2,18 +2,24 @@ import { utils } from "../util"
 import { IServiceParam } from "../types"
 const { debug, error } = require("b-logger")("copilot.services.store")
 const sqlite3 = require("sqlite3").verbose()
+import { getServices } from "../config"
+let dbfile = ":memory:"
+try {
+  dbfile = utils.path(getServices().store.file)
+  debug("Using ", dbfile)
+} catch (e) {
+  error("Failed to set db file", e)
+}
 /**
  * namespace|key|value
  * --|--|--
  * who want use store | store key | json
- * 
- * 
+ *
  */
 interface IRun {
   changes: number
 }
-const db = new sqlite3.Database(":memory:")
-const query: (q: string, ...param) => any = utils.promisify(db.each.bind(db))
+const db = new sqlite3.Database(dbfile)
 const get: (sql: string, ...param) => any = utils.promisify(db.get.bind(db))
 const run: (sql: string, ...param) => Promise<IRun> =
   (sql: string, ...param) => new Promise<IRun>((res, rej) => {
@@ -68,9 +74,10 @@ export class Store {
 
   public async get(key: string): Promise<string> {
     await this.wait4init()
-    let ret = await query(`select value from store where namespace = ? and key = ?`,
+    let ret = await get(`select value from store where namespace = ? and key = ?`,
       this.namespace,
       key)
+    debug(ret)
     if (ret) {
       return ret.value
     }
@@ -91,10 +98,10 @@ export class Store {
     }
   }
   public async getJson(key: string): Promise<any> {
-    return JSON.stringify(await this.get(key))
+    return JSON.parse(await this.get(key))
   }
   public async setJson(key: string, json: any) {
-    this.set(key, JSON.parse(json))
+    this.set(key, JSON.stringify(json))
   }
 
   private wait4init() {
