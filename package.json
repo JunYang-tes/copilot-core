@@ -22,8 +22,6 @@
     "test": "npm run build && mocha --compilers ts:ts-node/register --recursive 'test/**/*-spec.ts'",
     "coverage": "nyc --include='src/**/*.ts' --reporter=text --reporter=html --reporter=lcov mocha --compilers ts:ts-node/register --recursive 'test/**/*.test.ts'",
     "watch": "npm run build -- --watch",
-    "watch:dev": "npm run build:dev -- --watch",
-    "cp": " cp -r {lib,icon} ../copilot-io/node_modules/copilot-core/",
     "watch:test": "npm run test -- --watch"
   },
   "dependencies": {

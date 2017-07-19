@@ -135,7 +135,7 @@ alias:
   github: buildin.tools.toPipe --title "Search in github" --text "Search __arg__ in github" --value "https://github.com/search?q=__arg__" | buildin.file.open
   google: buildin.tools.toPipe --title "Search by google" --text "Search __arg__ by google" --value "https://www.google.com.sg/search?q=__arg__" | buildin.file.open
   bing: buildin.tools.toPipe --title "Search by bing" --text "Search __arg__ by bing"  --value "https://www.bing.com/search?q=__arg__" | buildin.file.open 
-
+  oxford: buildin.dict.oxford
 
 aliasInfo:
   wins:
@@ -169,3 +169,6 @@ aliasInfo:
   bing:
     text: bing <text>, search by bing
     icon: buildin.bing
+  oxford:
+    text: Oxford dict
+    icon: buildin.dict.oxford
