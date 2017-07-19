@@ -1,16 +1,25 @@
+export interface ISenses {
+    definitions: string[];
+    examples: [{
+        text: string;
+    }];
+    subsenses?: ISenses[];
+}
 export interface IOxfordParam {
     results: [{
         id: string;
+        language: string;
         lexicalEntries: [{
             entries: [{
-                senses: [{
-                    definitions: string[];
-                    examples: [{
-                        text: string;
-                    }];
+                etymologies: string[];
+                homographNumber: string;
+                senses: ISenses[];
+                variantForms: [{
+                    text: string;
                 }];
             }];
             pronunciations: [{
+                dialects: string[];
                 phoneticSpelling: string;
             }];
         }];

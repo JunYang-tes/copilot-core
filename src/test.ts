@@ -29,14 +29,13 @@ startUp()
     //     }
     //   })
 
-    handle("buildin.dict.iciba 你好$")
+    handle("buildin.dict.oxford hello$")
       .then((ret: IResult[]) => {
-        handle("buildin.dict.iciba 你好$")
+        handle("buildin.dict.oxford hello$")
           .then(console.log)
           .catch(console.error)
         debug(ret)
       })
-
 
     let store: Store = new Store({ namespace: "mystore" })
     debug("setJSON")

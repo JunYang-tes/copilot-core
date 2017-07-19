@@ -13,7 +13,7 @@ export class NetDict<S> extends Dict {
   protected header: any
   private url: string
   private store: IStore
-  private responseHandler: (res: any) => any
+  private responseHandler_: (res: any) => any
   constructor({ format, responseHandler, }: IDictParam<S>) {
     super({
       loader: {
@@ -21,15 +21,19 @@ export class NetDict<S> extends Dict {
           let fromStore = null
           try {
             fromStore = await this.store.getJson(word)
+            if (fromStore) {
+              fromStore = format(fromStore)
+            }
           } catch (e) {
             debug(e)
           }
           if (!fromStore) {
             debug("Fetch from server")
             let ret = await this.request(word)
-            debug(ret)
+            if (ret) {
+              this.store.setJson(word, ret)
+            }
             fromStore = format(ret)
-            this.store.setJson(word, fromStore)
           } else {
             debug("Got it from db")
           }
@@ -38,7 +42,7 @@ export class NetDict<S> extends Dict {
       }
     })
     this.header = {}
-    this.responseHandler = responseHandler || JSONResponse
+    this.responseHandler_ = responseHandler || JSONResponse
   }
   public declare() {
     let declared = super.declare()
@@ -52,10 +56,21 @@ export class NetDict<S> extends Dict {
   }
   public async request(word: string): Promise<any> {
     debug(`Fetch ${this.url.replace("{word}", querystring.escape(word))}`)
-    return this.responseHandler(
-      await fetch(this.url.replace("{word}", querystring.escape(word))))
+    return this.responseHandler_(
+      await fetch(this.url.replace("{word}", querystring.escape(word)),
+        {
+          headers: this.header
+        }
+      )
+    )
   }
 }
-export function JSONResponse(res) {
-  return res.json()
+export async function JSONResponse(res) {
+  let ret = await res.text()
+  try {
+    return JSON.parse(ret)
+  } catch (e) {
+    debug("Res:", ret)
+    debug(e)
+  }
 }

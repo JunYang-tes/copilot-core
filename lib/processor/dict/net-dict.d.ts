@@ -8,7 +8,7 @@ export declare class NetDict<S> extends Dict {
     protected header: any;
     private url;
     private store;
-    private responseHandler;
+    private responseHandler_;
     constructor({format, responseHandler}: IDictParam<S>);
     declare(): {
         services: string[];
@@ -22,4 +22,4 @@ export declare class NetDict<S> extends Dict {
     init(params: any): void;
     request(word: string): Promise<any>;
 }
-export declare function JSONResponse(res: any): any;
+export declare function JSONResponse(res: any): Promise<any>;

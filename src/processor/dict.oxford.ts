@@ -1,18 +1,26 @@
 import { NetDict } from "./dict/net-dict"
 const { debug } = require("b-logger")("copilot.dict.oxford")
+export interface ISenses {
+  definitions: string[],
+  examples: [{ text: string }],
+  subsenses?: ISenses[],
+}
+
 export interface IOxfordParam {
   results: [{
     id: string,
+    language: string,
     lexicalEntries: [{
       entries: [
         {
-          senses: [{
-            definitions: string[],
-            examples: [{ text: string }]
-          }]
+          etymologies: string[],
+          homographNumber: string,
+          senses: ISenses[],
+          variantForms: [{ text: string }]
         }
       ],
       pronunciations: [{
+        dialects: string[],
         phoneticSpelling: string
       }]
     }]
@@ -23,7 +31,35 @@ class Oxford extends NetDict<IOxfordParam> {
   constructor() {
     super({
       format: (ret) => {
-        return []
+        let list = []
+        for (let result of ret.results) {
+          for (let lex of result.lexicalEntries) {
+            let p = lex.pronunciations
+              .map(e => `${e.dialects.join(" ")}[${e.phoneticSpelling}]`)
+              .join(";")
+            list.push({
+              title: ret.id,
+              text: p,
+              value: p
+            })
+            for (let entry of lex.entries) {
+              let sense = entry.senses
+              while (sense.length) {
+                let s = sense.shift()
+                if (s.subsenses) {
+                  sense.push(...s.subsenses)
+                }
+                list.push(...s.definitions.map(d => ({
+                  text: `[Definition]${d}`
+                })))
+                list.push(...s.examples.map(e => ({
+                  text: `[example]${e.text}`
+                })))
+              }
+            }
+          }
+        }
+        return list
       }
     })
   }
