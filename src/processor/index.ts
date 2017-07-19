@@ -4,7 +4,7 @@ import { stat } from "../util"
 import * as util from "util"
 import * as path from "path"
 import { Check, InvalidResult, Processor, ProcessorName } from "../types"
-import { loadConfig, getConfig } from "../config"
+import { getConfig } from "../config"
 import { getServices } from "../services"
 
 const { asyncify } = require("array-asyncify")
@@ -17,6 +17,11 @@ interface IParsed {
 }
 function isCheckResultArray(x: any): x is InvalidResult[] {
   return x instanceof Array
+}
+
+function validProcessorName(name) {
+  let specialName = ["check", "init", "declare"]
+  return !specialName.includes(name) && !/_$/.test(name)
 }
 
 async function parse(
@@ -61,7 +66,7 @@ async function parse(
       if (isCheckResultArray(checkResult)) {
         const invalid = checkResult as InvalidResult[]
         Object.keys(obj)
-          .filter((key) => key !== "check" && !/_$/.test(key) && invalid.every(e => e.key !== key))
+          .filter((key) => validProcessorName(key) && invalid.every(e => e.key !== key))
           .map(key => obj[key].bind(obj))
           .forEach(fun => {
             processors[name({ funName: fun.name, fileName }).replace(/\.default$/, "")] = fun
@@ -73,7 +78,7 @@ async function parse(
       } else {
         if (checkResult.valid) {
           Object.keys(obj)
-            .filter(key => key !== "check" && key !== "init" && !/_$/.test(key) && util.isFunction(obj[key]))
+            .filter(key => validProcessorName(key) && util.isFunction(obj[key]))
             .map(key => obj[key].bind(obj))
             .forEach(fun => {
               debug(`Load processor ${fun.name}`)
@@ -94,7 +99,7 @@ async function parse(
         debug(`${key} is function:`, util.isFunction(obj[key]))
         return key
       })
-      .filter(key => key !== "check" && util.isFunction(obj[key]))
+      .filter(key => validProcessorName(key) && util.isFunction(obj[key]))
       // .map(key => obj[key].bind(obj))
       .forEach(key => {
         let fun = obj[key]
