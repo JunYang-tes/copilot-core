@@ -13,6 +13,8 @@ using:
 services:
   store:
     file: ~/.config/copilot/store.db
+  socketio:
+    port: 9991
 
 processors : 
   buildin.apps[linux]:

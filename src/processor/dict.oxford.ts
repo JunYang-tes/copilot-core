@@ -2,7 +2,7 @@ import { NetDict } from "./dict/net-dict"
 const { debug } = require("b-logger")("copilot.dict.oxford")
 export interface ISenses {
   definitions: string[],
-  examples: [{ text: string }],
+  examples?: [{ text: string }],
   subsenses?: ISenses[],
 }
 
@@ -52,9 +52,11 @@ class Oxford extends NetDict<IOxfordParam> {
                 list.push(...s.definitions.map(d => ({
                   text: `[Definition]${d}`
                 })))
-                list.push(...s.examples.map(e => ({
-                  text: `[example]${e.text}`
-                })))
+                if (s.examples) {
+                  list.push(...s.examples.map(e => ({
+                    text: `[example]${e.text}`
+                  })))
+                }
               }
             }
           }

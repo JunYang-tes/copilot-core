@@ -1,3 +1,4 @@
+export declare function init(cfg: any): void;
 export declare function suspend(): {
     title: string;
     text: string;
@@ -29,6 +30,5 @@ export declare function mute(): {
     title: string;
     text: string;
 }[];
-export declare function ip(): void;
-export declare function wifiOff(): void;
-export declare function wifiOn(): void;
+export declare const wifi: (...args: any[]) => any;
+export declare const ip: (...args: any[]) => any;

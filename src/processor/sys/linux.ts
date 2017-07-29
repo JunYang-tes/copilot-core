@@ -1,4 +1,33 @@
-export function suspend() {
+import { utils } from "../../util"
+import { IOption } from "../../types"
+const { debug } = require("b-logger")("copilot.sys.linux")
+function cmdsRequired(cmds: string[], fn: any) {
+  let canUse = true
+    ; (async () => {
+      try {
+        await Promise.all(cmds.map(cmd => utils.exec("which", cmd)))
+      } catch (e) {
+        canUse = false
+        debug(e)
+      }
+    })()
+
+  return (...args) => {
+    if (canUse) {
+      return fn(...args)
+    } else {
+      return [{
+        text: "xxx is required"
+      }]
+    }
+  }
+}
+
+export function init(cfg) {
+
+}
+export
+  function suspend() {
   return [{
     title: "Supend",
     text: "Suspend system",
@@ -40,14 +69,60 @@ export function mute() {
   }]
 }
 
-export function ip() {
+export const wifi = cmdsRequired(["pkexec1", "iw", "ip", "awk", "sh"], async function wifi(opt: IOption) {
+  let ifs = (await utils.exec("sh", ["-c", "iw dev | grep Interface | awk '{print $2}'"]))
+    .split("\n")
+    .filter(i => i)
+  let status = (await utils.exec("sh", ["-c", " ip link show | grep '^[0-9]'"]))
+    .split("\n")
+    .map(line => line.split(/\s+/))
+    .filter(a => a.length >= 3)
+    .map(([id, name, statusStr]) => {
+      return {
+        name: name.substring(0, name.length - 1),
+        up: statusStr.includes("UP")
+      }
+    })
+    .reduce((i, ret) => (i[ret.name] = ret, i), {})
+  debug("", ifs, status)
 
+  return ifs.map(i => ({
+    text: `Turn  ${i} ${status[i].up ? "down" : "up"}`,
+    param: {
+      action: "cmd",
+      cmd: "pkexec",
+      args: ["ip", "link", "set", i, status[i].up ? "down" : "up"]
+    }
+  }))
 }
+)
+export const ip = cmdsRequired(["ifconfig", "awk", "sh"], async function ip() {
+  let ifs: any = (await utils.exec("ifconfig", ["-s"]))
+    .split("\n")
+    .slice(1)
+    .map(line => line.split(/\s+/))
+    .map(([name, mtu, met, RXOK, RXERRR]) => ({ name, RXOK: +RXOK }))
+    .filter(i => i.name)
+    .sort((a, b) => b.RXOK - a.RXOK)
 
-export function wifiOff() {
+  for (let i of ifs) {
+    try {
+      i.ip = (await utils.exec("ifconfig", [i.name]))
+        .split("\n")
+        .filter(line => /inet addr/.test(line))
+        .map(line => /\d*\.\d*\.\d*\.\d*/.exec(line))
+        .filter(item => item)
+        .map(line => (debug(line), line))
+        .map(item => item[0])[0]
+    } catch (e) {
+      debug(e)
+    }
+  }
 
-}
-
-export function wifiOn() {
-
-}
+  return ifs
+    .filter(i => i.ip)
+    .map(i => ({
+      title: i.name,
+      text: i.ip
+    }))
+})

@@ -109,6 +109,13 @@ function lookUpIcon(cmd) {
   }
   return fullname in processorInfo ? fullname : cmd
 }
+function fixIResult(list: IResult[]) {
+  return list.map(i => {
+    if (!("value" in i)) {
+
+    }
+  })
+}
 
 export async function handle(input: string): Promise<IResult[]> {
   let ret: IResult[] = []

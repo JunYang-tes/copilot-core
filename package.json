@@ -25,9 +25,10 @@
     "watch:test": "npm run test -- --watch"
   },
   "dependencies": {
+    "@types/socket.io": "^1.4.29",
     "@types/sqlite3": "^3.1.0",
     "array-asyncify": "^0.0.7",
-    "b-logger": "^0.0.4",
+    "b-logger": "^0.0.13",
     "cli-argparser": "^0.0.12",
     "clipboardy": "^1.1.4",
     "debug": "^2.6.8",
@@ -38,9 +39,11 @@
     "lru-cache": "^4.1.1",
     "node-fetch": "^1.7.1",
     "scalc": "^2.0.1",
+    "socket.io": "^2.0.3",
     "sqlite3": "^3.1.8",
     "tldr": "^2.0.1",
-    "twss": "^0.1.6"
+    "twss": "^0.1.6",
+    "ws": "^3.0.0"
   },
   "devDependencies": {
     "@types/chai": "^3.0.0",

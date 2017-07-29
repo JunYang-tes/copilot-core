@@ -1,6 +1,6 @@
 export interface ISenses {
     definitions: string[];
-    examples: [{
+    examples?: [{
         text: string;
     }];
     subsenses?: ISenses[];
