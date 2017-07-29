@@ -57,7 +57,7 @@ async function parse(
   }
 
   if (obj.init && util.isFunction(obj.init)) {
-    await obj.init(param);//getConfig(name({ fileName, funName: "init" })))
+    await obj.init(param)
   }
   if (obj.check && util.isFunction(obj.check)) {
     const check = obj.check as Check
