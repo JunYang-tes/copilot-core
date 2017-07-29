@@ -50,15 +50,7 @@ export declare function timeout(op: IOption, list: IResult[]): {
         original: IResult;
     };
 }[];
-export declare function notify(op: IOption, list: IResult[]): {
-    title: string;
-    text: any;
-    param: {
-        action: string;
-        cmd: string;
-        args: any[];
-    };
-}[];
+export declare const notify: (...args: any[]) => any;
 export declare function copy(op: IOption, list: IResult[]): {
     param: {
         action: string;

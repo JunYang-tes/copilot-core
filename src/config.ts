@@ -97,7 +97,6 @@ function processInfoFix() {
   infoFix(Object.keys(config.processorsInfo), config.processorsInfo)
 }
 
-
 export function getUsing(): string[] {
   return Array.from<string>(config.using || [])
 }

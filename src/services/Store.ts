@@ -1,13 +1,21 @@
 import { utils } from "../util"
 import { IServiceParam } from "../types"
+import { getServices } from "../config"
+import { existsSync } from "fs"
+import { parse } from "path"
 const { debug, error } = require("b-logger")("copilot.services.store")
 const sqlite3 = require("sqlite3").verbose()
-import { getServices } from "../config"
+const mkdirp = require("mkdirp")
+
 let dbfile = ":memory:"
 try {
   dbfile = utils.path(getServices().store.file)
   debug("Using ", dbfile)
+  if (!existsSync(dbfile)) {
+    mkdirp.sync(parse(dbfile).dir)
+  }
 } catch (e) {
+  dbfile = ":memory:"
   error("Failed to set db file", e)
 }
 /**

@@ -6,6 +6,7 @@ export interface IDictParam {
 }
 export class Dict {
   protected cfg: any
+  protected store: any
   private cache: ICache
 
   private loader: any

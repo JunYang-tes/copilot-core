@@ -1,9 +1,7 @@
 import { IResult } from "../types";
 declare var _default: {
     filter_(list: IResult[]): IResult[];
-    check(): Promise<{
-        valid: boolean;
-    }>;
+    init(): void;
     list(): Promise<{
         title: any;
         text: any;

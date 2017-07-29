@@ -5,6 +5,7 @@ export interface IDictParam {
 }
 export declare class Dict {
     protected cfg: any;
+    protected store: any;
     private cache;
     private loader;
     constructor({loader}: {

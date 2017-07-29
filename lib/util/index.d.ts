@@ -16,3 +16,4 @@ export declare const utils: {
     sh: (command: string, args: any) => Promise<string>;
     promisify: (api: Function) => (...param: any[]) => Promise<any>;
 };
+export declare function cmdsRequired(cmds: string[], fn: any, errors?: string[]): (...args: any[]) => any;

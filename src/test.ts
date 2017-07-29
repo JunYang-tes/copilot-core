@@ -29,11 +29,9 @@ startUp()
     //     }
     //   })
 
-    handle("buildin.dict.oxford hello$")
+    handle("buildin.sys.wifi hello$")
       .then((ret: IResult[]) => {
-        handle("buildin.dict.oxford hello$")
-          .then(console.log)
-          .catch(console.error)
+
         debug(ret)
       })
 

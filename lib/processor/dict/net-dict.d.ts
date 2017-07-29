@@ -7,7 +7,6 @@ export interface IDictParam<S> {
 export declare class NetDict<S> extends Dict {
     protected header: any;
     private url;
-    private store;
     private responseHandler_;
     constructor({format, responseHandler}: IDictParam<S>);
     declare(): {

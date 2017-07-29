@@ -1,6 +1,6 @@
 import * as fs from "fs"
 import * as OS from "os"
-import { readdir, utils } from "../util"
+import { readdir, utils, cmdsRequired } from "../util"
 import { parse, resolve } from "path"
 import { IResult } from "../types"
 
@@ -10,28 +10,20 @@ const openCmd = "xdg-open"
 
 export default {
   path: OS.homedir(),
-  async check() {
-    debug("Check xdg-open")
-    try {
-      utils.exec("which", openCmd)
-      return {
-        valid: true
-      }
-    } catch (e) {
-      return {
-        valid: false,
-        msg: `No ${openCmd} found, file processors not available`
-      }
-    }
+  init() {
+    this.open = cmdsRequired([openCmd], this.open)
   },
   cd(op: { strings: string[] }) {
-    let [path] = op.strings
-    if (!path.startsWith("/")) {
-      path = resolve(`${this.path}/${path}`)
-    }
-    if (fs.existsSync(path)) {
-      this.path = path
-    }
+    return [{
+      text: "soon..."
+    }]
+    // let [path] = op.strings
+    // if (!path.startsWith("/")) {
+    //   path = resolve(`${this.path}/${path}`)
+    // }
+    // if (fs.existsSync(path)) {
+    //   this.path = path
+    // }
   },
   open(op: any, list: IResult[]) {
     return list.map(item => ({

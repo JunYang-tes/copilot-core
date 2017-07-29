@@ -1,4 +1,5 @@
 import utils from "../../util"
+import { cmdsRequired } from "../../util"
 import { readdir } from "../../util"
 import { IResult } from "../../types"
 import { parse } from "./x11-desktop-entry"
@@ -17,9 +18,6 @@ export interface InitParam {
 }
 
 export default {
-  // async check() {
-
-  // },
   async init({ cfg }: InitParam) {
     debug("Init apps:", cfg)
     this.path = cfg.path
@@ -91,6 +89,7 @@ export default {
       debug(`Loaded entries:${entires.length}`)
       this.entires.push(...entires)
     }))
+    this.launch = cmdsRequired([this.cfg.launch], this.launch)
   },
   list() {
     return this.entires

@@ -1,9 +1,8 @@
 {
   "name": "copilot-core",
-  "version": "0.0.25",
+  "version": "0.0.28",
   "description": "copilot",
   "license": "MIT",
-  "repository": "",
   "author": "",
   "keywords": [
     ""
@@ -12,6 +11,10 @@
     "lib",
     "icon"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OuyangQianba/copilot-core"
+  },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
@@ -37,6 +40,7 @@
     "ini": "^1.3.4",
     "js-yaml": "^3.8.4",
     "lru-cache": "^4.1.1",
+    "mkdirp": "^0.5.1",
     "node-fetch": "^1.7.1",
     "scalc": "^2.0.1",
     "socket.io": "^2.0.3",

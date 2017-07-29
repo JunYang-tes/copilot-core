@@ -1,22 +1,15 @@
-import utils from "../util"
+import { cmdsRequired, utils } from "../util"
 import { IResult, ICmdParam } from "../types"
 export default {
   filter_(list: IResult[]) {
     return list ? list.filter(i => i.param && i.param.id && /^0x[0-9a-f]/i) : []
   },
-  async check() {
-    try {
-      await utils.exec("which", "wmctrl")
-      await utils.exec("which", "xdotool")
-      return {
-        valid: true
-      }
-    } catch (e) {
-      return {
-        valid: false,
-        msg: "No wmctrl found, please install it"
-      }
-    }
+  init() {
+    Object.keys(this)
+      .filter(k => k !== "init" && !(/_$/.test(k)))
+      .forEach(key => {
+        this[key] = cmdsRequired(["wmctrl", "xdotool"], this[key])
+      })
   },
   async list() {
     let ret = await utils.exec("wmctrl", "-lp")

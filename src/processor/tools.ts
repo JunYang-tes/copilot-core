@@ -1,4 +1,5 @@
 import { IResult, IOption } from "../types"
+import { cmdsRequired } from "../util"
 
 export function head(op: { strings: [string] }, list: IResult[]): IResult[] {
   let n = Number(op.strings[0])
@@ -96,7 +97,7 @@ export function timeout(op: IOption, list: IResult[]) {
   }))
 }
 
-export function notify(op: IOption, list: IResult[]) {
+export const notify = cmdsRequired(["notify-send"], function notify(op: IOption, list: IResult[]) {
   //TODO:cross-platform
   if (list.length) {
     return list.map(item => ({
@@ -123,7 +124,7 @@ export function notify(op: IOption, list: IResult[]) {
     }]
   }
 }
-
+)
 export function copy(op: IOption, list: IResult[]) {
   let field = op.strings[0] || "value"
   return list.map(item => ({

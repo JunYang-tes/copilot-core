@@ -1,4 +1,3 @@
-export declare function init(cfg: any): void;
 export declare function suspend(): {
     title: string;
     text: string;

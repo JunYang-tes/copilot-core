@@ -8,11 +8,15 @@ try {
 } catch (e) {
   debug("Failed to get port from config,", e)
 }
-try {
-  server.listen(port)
-} catch (e) {
-  error(`Failed to listen at ${port},services related this port will fail`)
-}
+
+process.on("uncaughtException", (e) => {
+  if (e.code === "EADDRINUSE") {
+    error(`Failed to listen at ${port},services related this port will fail`)
+  } else {
+    throw e
+  }
+})
+server.listen(port, (e) => error)
 
 const io = require("socket.io")(server)
 
@@ -110,6 +114,3 @@ export class OriginalWebSocket implements ISocket {
 
   }
 }
-new SocketIO({ namespace: "test" })
-new OriginalWebSocket({ namespace: "test" })
-

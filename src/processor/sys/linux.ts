@@ -1,31 +1,7 @@
-import { utils } from "../../util"
+import { utils, cmdsRequired } from "../../util"
 import { IOption } from "../../types"
 const { debug } = require("b-logger")("copilot.sys.linux")
-function cmdsRequired(cmds: string[], fn: any) {
-  let canUse = true
-    ; (async () => {
-      try {
-        await Promise.all(cmds.map(cmd => utils.exec("which", cmd)))
-      } catch (e) {
-        canUse = false
-        debug(e)
-      }
-    })()
 
-  return (...args) => {
-    if (canUse) {
-      return fn(...args)
-    } else {
-      return [{
-        text: "xxx is required"
-      }]
-    }
-  }
-}
-
-export function init(cfg) {
-
-}
 export
   function suspend() {
   return [{
@@ -69,7 +45,7 @@ export function mute() {
   }]
 }
 
-export const wifi = cmdsRequired(["pkexec1", "iw", "ip", "awk", "sh"], async function wifi(opt: IOption) {
+export const wifi = cmdsRequired(["pkexec", "iw", "ip", "awk", "sh"], async function wifi(opt: IOption) {
   let ifs = (await utils.exec("sh", ["-c", "iw dev | grep Interface | awk '{print $2}'"]))
     .split("\n")
     .filter(i => i)
@@ -94,7 +70,8 @@ export const wifi = cmdsRequired(["pkexec1", "iw", "ip", "awk", "sh"], async fun
       args: ["ip", "link", "set", i, status[i].up ? "down" : "up"]
     }
   }))
-}
+},
+  ["pkexec is missing,install policykit please"]
 )
 export const ip = cmdsRequired(["ifconfig", "awk", "sh"], async function ip() {
   let ifs: any = (await utils.exec("ifconfig", ["-s"]))

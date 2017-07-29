@@ -39,7 +39,7 @@ const helper = {
         res(...rest)
       }
     })
-  }),
+  })
 }
 type API = () => any
 export const stat: (path: string | Buffer) => Promise<fs.Stats> = helper.promisify(fs.stat)
@@ -47,3 +47,33 @@ export const readdir: (path: string | Buffer) => Promise<string[]> = helper.prom
 export const readFile: (path: string, encoding: string) => Promise<string> = helper.promisify(fs.readFile)
 export default helper
 export const utils = helper
+export function cmdsRequired(cmds: string[], fn: any, errors: string[] = []) {
+  //TODO:crose-platform
+  let error = ""
+  let canUse = true
+    ; (async () => {
+      try {
+        await Promise.all(cmds.map(async (cmd, idx) => {
+          try {
+            await utils.exec("which", cmd)
+          } catch (e) {
+            error = errors[idx] || `${cmd} is missing,please to install it`
+            throw e
+          }
+        }))
+      } catch (e) {
+        canUse = false
+      }
+    })()
+
+  return function cmdsReqWrapper(...args) {
+    if (canUse) {
+      return fn.apply(this, args)
+    } else {
+      return [{
+        text: error,
+        value: error
+      }]
+    }
+  }
+}

@@ -1,12 +1,12 @@
 import { IResult } from "../types";
 declare var _default: {
     path: string;
-    check(): Promise<{
-        valid: boolean;
-    }>;
+    init(): void;
     cd(op: {
         strings: string[];
-    }): void;
+    }): {
+        text: string;
+    }[];
     open(op: any, list: IResult[]): {
         title: string;
         value: string;

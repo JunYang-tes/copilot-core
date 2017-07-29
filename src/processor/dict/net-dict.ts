@@ -12,7 +12,6 @@ export interface IDictParam<S> {
 export class NetDict<S> extends Dict {
   protected header: any
   private url: string
-  private store: IStore
   private responseHandler_: (res: any) => any
   constructor({ format, responseHandler, }: IDictParam<S>) {
     super({
