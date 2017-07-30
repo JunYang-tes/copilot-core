@@ -1,6 +1,6 @@
 {
   "name": "copilot-core",
-  "version": "0.0.28",
+  "version": "0.0.32",
   "description": "copilot",
   "license": "MIT",
   "author": "",
@@ -31,7 +31,7 @@
     "@types/socket.io": "^1.4.29",
     "@types/sqlite3": "^3.1.0",
     "array-asyncify": "^0.0.7",
-    "b-logger": "^0.0.13",
+    "b-logger": "^0.0.14",
     "cli-argparser": "^0.0.12",
     "clipboardy": "^1.1.4",
     "debug": "^2.6.8",

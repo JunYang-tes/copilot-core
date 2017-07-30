@@ -36,13 +36,13 @@ export async function startUp() {
     })
   processorNames = Object.keys(processors)
 }
-export function run(result: IResult) {
+export async function run(result: IResult) {
   if (result.param && ("action" in result.param)) {
     debug("run:", result.param)
-    action[result.param.action](result.param, result)
+    await action[result.param.action](result.param, result)
   } else {
     debug("Unknow what to run,fallback to copy")
-    action.copy(null, result)
+    await action.copy(null, result)
   }
   cache.clear()
 }

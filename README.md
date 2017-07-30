@@ -1,6 +1,6 @@
 A tool like Alfred on Mac
 
-This is a core library,**NOT** a client with user interface, [Here](https://www.npmjs.com/package/copilot-io) is a GUI program.
+This is a core library,**NOT** a client with user interface, [Here](https://www.npmjs.com/package/copilot-io) is a GUI program,[Here](https://www.npmjs.com/package/copilot-cli) is a CLI program
 
 **NOTE**
 
