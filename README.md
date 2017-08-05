@@ -141,3 +141,10 @@ A CLI user interface is coming.
 ## oxford dict
 oxford API has a limitation related to query times per month. You'd better to register a new account to get a key to replace to default one.
 [Oxford link](https://developer.oxforddictionaries.com)
+
+## Todo list
+
++ Chrome integration
++ Load external processors
++ Notification framework
++ Improve app launch
