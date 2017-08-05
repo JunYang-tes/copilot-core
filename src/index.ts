@@ -25,6 +25,11 @@ let processors: {
 let processorNames: string[]
 let cache = new Cache<ICacheItem>()
 
+process.on("uncaughtException", (e) => {
+  error("UncaughtException:")
+  error(e)
+})
+
 export async function startUp() {
   debug("@startUp")
   let loaded = await load({})

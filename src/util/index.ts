@@ -77,3 +77,46 @@ export function cmdsRequired(cmds: string[], fn: any, errors: string[] = []) {
     }
   }
 }
+export function speicalSplit(str: string, by: RegExp = /\s/) {
+  //TODO:consider escape
+  let parts = []
+  let currentPart = ""
+  let inStr = 1;
+  let inSingleQuotedStr = 2;
+  let state = 0;
+  let init = 0;
+
+  for (let i = 0; i < str.length; i++) {
+    let char = str.charAt(i)
+    switch (state) {
+      case inStr:
+        if (char === '"') {
+          state = init
+        }
+        currentPart += char
+        break
+      case inSingleQuotedStr:
+        if (char === "'") {
+          state = init
+        }
+        currentPart += char
+        break
+      case init:
+        if (char === '"') {
+          state = inStr;
+        } else if (char === "'") {
+          state = inSingleQuotedStr
+        } else if (by.test(char)) {
+          parts.push(currentPart)
+          currentPart = ""
+          continue
+        }
+        currentPart += char
+    }
+  }
+
+  if (currentPart) {
+    parts.push(currentPart)
+  }
+  return parts;
+}

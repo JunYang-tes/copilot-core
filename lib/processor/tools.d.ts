@@ -68,6 +68,6 @@ export declare function cmd(op: IOption): {
     param: {
         action: string;
         cmd: any;
-        args: string[];
+        args: any;
     };
 }[];

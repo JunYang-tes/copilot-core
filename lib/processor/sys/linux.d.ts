@@ -1,3 +1,4 @@
+import { IOption } from "../../types";
 export declare function suspend(): {
     title: string;
     text: string;
@@ -31,3 +32,6 @@ export declare function mute(): {
 }[];
 export declare const wifi: (...args: any[]) => any;
 export declare const ip: (...args: any[]) => any;
+export declare function bc(opt: IOption): Promise<{
+    text: string;
+}[]>;

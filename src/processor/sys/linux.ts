@@ -103,3 +103,12 @@ export const ip = cmdsRequired(["ifconfig", "awk", "sh"], async function ip() {
       text: i.ip
     }))
 })
+
+export async function bc(opt: IOption) {
+  let ret = await utils.exec("sh", [
+    "-c", "echo 1+2 | bc"
+  ])
+  return [{
+    text: ret,
+  }]
+}

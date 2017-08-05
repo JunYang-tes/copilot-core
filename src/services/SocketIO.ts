@@ -9,13 +9,6 @@ try {
   debug("Failed to get port from config,", e)
 }
 
-process.on("uncaughtException", (e) => {
-  if (e.code === "EADDRINUSE") {
-    error(`Failed to listen at ${port},services related this port will fail`)
-  } else {
-    throw e
-  }
-})
 server.listen(port, (e) => error)
 
 const io = require("socket.io")(server)

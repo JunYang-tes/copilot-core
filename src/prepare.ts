@@ -10,7 +10,7 @@
 
 import { getAlias } from "./config"
 const { debug } = require("b-logger")("copilot.prepare")
-
+import { speicalSplit } from "./util"
 export interface IPrepared {
   cmd: string,
   rest: string
@@ -48,16 +48,20 @@ export function prepare(cmd: string): IPrepared[] {
         e.cmd = alias[e.cmd]
         let args = speicalSplit(e.rest.trim());
         e.cmd = e.cmd.replace(/__arg[0-9]+__/g, (m) => {
-          if (args.length) {
-            return args.shift();
+          let idx = +m.replace(/[^\d]/g, "") - 1
+          if (idx < args.length) {
+            let replace = args[idx]
+            args[idx] = 0
+            return replace;
           }
           return m;
         })
-
+        args = args.filter(i => i)
         if (e.cmd.includes("__arg__")) {
           e.cmd = e.cmd.replace(/__arg__/g, args.join(" "))
-          e.rest = ""
+          args = []
         }
+        e.rest = args.join(" ")
         flag = true
       }
     }
@@ -70,47 +74,4 @@ export function prepare(cmd: string): IPrepared[] {
   }
   debug(`Convert ${cmd} to \n`, ret)
   return ret
-}
-function speicalSplit(str: string, by: RegExp = /\s/) {
-  //TODO:consider escape
-  let parts = []
-  let currentPart = ""
-  let inStr = 1;
-  let inSingleQuotedStr = 2;
-  let state = 0;
-  let init = 0;
-
-  for (let i = 0; i < str.length; i++) {
-    let char = str.charAt(i)
-    switch (state) {
-      case inStr:
-        if (char === '"') {
-          state = init
-        }
-        currentPart += char
-        break
-      case inSingleQuotedStr:
-        if (char === "'") {
-          state = init
-        }
-        currentPart += char
-        break
-      case init:
-        if (char === '"') {
-          state = inStr;
-        } else if (char === "'") {
-          state = inSingleQuotedStr
-        } else if (by.test(char)) {
-          parts.push(currentPart)
-          currentPart = ""
-          continue
-        }
-        currentPart += char
-    }
-  }
-
-  if (currentPart) {
-    parts.push(currentPart)
-  }
-  return parts;
 }

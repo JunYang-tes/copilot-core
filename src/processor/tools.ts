@@ -135,16 +135,18 @@ export function copy(op: IOption, list: IResult[]) {
     }
   }))
 }
-
+import { speicalSplit } from "../util"
 export function cmd(op: IOption) {
+  let cmd = op.cmd || "sh"
+  let args = op.args
   return [{
     title: op.title,
     text: op.text,
     value: op.value,
     param: {
       action: "cmd",
-      cmd: op.cmd,
-      args: op.strings
+      cmd,
+      args
     }
   }]
 }

@@ -17,3 +17,4 @@ export declare const utils: {
     promisify: (api: Function) => (...param: any[]) => Promise<any>;
 };
 export declare function cmdsRequired(cmds: string[], fn: any, errors?: string[]): (...args: any[]) => any;
+export declare function speicalSplit(str: string, by?: RegExp): any[];
