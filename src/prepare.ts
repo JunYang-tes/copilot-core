@@ -16,7 +16,7 @@ export interface IPrepared {
   rest: string
 }
 
-function split(cmd: string) {
+export function split(cmd: string) {
   //debug("split:", cmd)
   //TODO: better split
   return cmd.trim().split("|")
@@ -35,6 +35,14 @@ function split(cmd: string) {
       }
     })
 }
+function findMatchedAlias(cmd) {
+  let alias = getAlias()
+  let names = Object.keys(alias).sort()
+  if (cmd in alias) {
+    return alias[cmd]
+  }
+  return names.find((value) => value.startsWith(cmd))
+}
 
 export function prepare(cmd: string): IPrepared[] {
   let alias = getAlias()
@@ -44,8 +52,9 @@ export function prepare(cmd: string): IPrepared[] {
     flag = false
     debug("before apply:", ret)
     for (let e of ret) {
-      if (e.cmd in alias) {
-        e.cmd = alias[e.cmd]
+      let name = findMatchedAlias(e.cmd)
+      if (name) {
+        e.cmd = name
         let args = speicalSplit(e.rest.trim());
         e.cmd = e.cmd.replace(/__arg[0-9]+__/g, (m) => {
           let idx = +m.replace(/[^\d]/g, "") - 1

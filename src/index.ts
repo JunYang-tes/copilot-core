@@ -127,7 +127,8 @@ export async function handle(input: string): Promise<IResult[]> {
   if (processors === null) {
     throw new Error("processors is empty,call startUp before handle")
   }
-  let cmds = parse(input)
+  let cmdInfo = parse(input)
+  let cmds = cmdInfo.parsed
   let useCache = true
   return asyncify(cmds)
     .reduce(async (pre: any, next: IParsedCmd, idx: number) => {
@@ -141,6 +142,15 @@ export async function handle(input: string): Promise<IResult[]> {
         useCache = false
       }
       let { processor, fullname } = lookup(next.cmd)
+      debug(`==${next.cmd}==`)
+      debug(`==${next.original}==`)
+      if (!processor &&
+        (idx !== cmds.length - 1 || next.original.length > next.originalCmd.length)) {
+        let completed = complete(next.originalCmd)
+        debug(completed[0])
+        completed.length > 0 && (processor = completed[0].param.processor)
+      }
+
       if (processor) {
         ret = (await processor(next.args || {}, pre))
           .map(item => ({
@@ -148,11 +158,17 @@ export async function handle(input: string): Promise<IResult[]> {
             icon: item.icon || fullname
           }))
         // debug(`Result of ${next.cmd}`, ret)
+        if (idx === cmds.length - 1 && !cmdInfo.original.lastCmdHasOpt) {
+          debug("last")
+          debug("complete ", next.originalCmd)
+          debug(complete(cmdInfo.original.lastCmd))
+          ret = ret.concat(complete(cmdInfo.original.lastCmd))
+        }
         cache.set(next.cmd, { cmd: next.original, result: ret })
         return ret
       } else /*if (idx === cmds.length - 1)*/ {
         debug("Complete-")
-        return complete(next.cmd)
+        return complete(cmdInfo.original.lastCmd)
       } /*else {
         debug(`No such processor:`, next.cmd)
         throw {

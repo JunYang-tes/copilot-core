@@ -29,7 +29,7 @@ startUp()
     //     }
     //   })
 
-    handle("buildin.sys.wifi hello$")
+    handle("b")
       .then((ret: IResult[]) => {
 
         debug(ret)
