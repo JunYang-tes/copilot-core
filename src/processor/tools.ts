@@ -53,11 +53,13 @@ export function toPipe(op: IOption) {
   }]
 }
 
-const scalc = require("scalc")
+// const scalc = require("scalc")
 export function calc(op: IOption) {
   let exp = op.strings.join(" ").trim()
   if (exp.length) {
-    let result = scalc(exp)
+    //NOTE: scalc has a bug that scalc("1/2.") with lead crash
+    //TODO: refactor
+    let result = eval(exp)
     return [{
       title: result,
       text: `${exp} = ${result}`,
@@ -149,4 +151,15 @@ export function cmd(op: IOption) {
       args
     }
   }]
+}
+
+export function all(op: IOption, list: IResult[]): IResult[] {
+  return [{
+    title: "Run all",
+    text: "Run all of follow",
+    param: {
+      action: "all",
+      list
+    }
+  }].concat(list as any)
 }

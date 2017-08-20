@@ -71,3 +71,4 @@ export declare function cmd(op: IOption): {
         args: any;
     };
 }[];
+export declare function all(op: IOption, list: IResult[]): IResult[];
