@@ -1,9 +1,9 @@
-import { readFileSync, existsSync } from "fs"
+import { readFileSync, readdirSync, existsSync, statSync } from "fs"
 import { parse } from "path"
 import os = require("os")
 import utils from "./util"
 const merge = require("deepmerge")
-const { debug } = require("b-logger")("copilot.config")
+const { debug, warn } = require("b-logger")("copilot.config")
 const yaml = require("js-yaml")
 let config: any = null
 function loadConfig() {
@@ -15,12 +15,40 @@ function loadConfig() {
     } catch (e) {
       debug("Failed to load custom config", e)
     }
+    //load external processors' config file
+    loadConfig4ExProcessors(getConfigByKeys("external.processors", "js", "path") || [])
     debug("Currenct config:", config)
     aliasInfoFix();
     processInfoFix();
   }
 }
 loadConfig()
+function loadConfig4ExProcessors(path: string[]) {
+  debug("merge external processor's config")
+  path.map(p => {
+    //p is a path of processors,each dir in p is a processor
+    p = utils.path(p)
+    try {
+      return readdirSync(`${p}`)
+        .filter(f => statSync(`${p}/${f}`)
+          .isDirectory() && existsSync(`${p}/${f}/config.yaml`))
+        .map(f => `${p}/${f}`)
+    } catch (e) {
+      warn(e)
+    }
+    return []
+  })
+    .forEach(p => {
+      p.forEach(configFile => {
+        debug(configFile)
+        let c = yaml.safeLoad(configFile)
+        config.processors = merge(config.processors, c.processors || {})
+        config.processorsInfo = merge(config.processorsInfo, c.processorsInfo || {})
+      });
+    })
+
+}
+
 export function getAlias(): { [alias: string]: string } {
   return config.alias
 }
@@ -118,4 +146,13 @@ export function getProcessorsInfo() {
 }
 export function getServices() {
   return config.services
+}
+export function getConfigByKeys(...params: string[]) {
+  let key = params.shift()
+  let obj = config[key]
+  while (params.length && obj !== null && obj !== undefined) {
+    key = params.shift()
+    obj = obj[key]
+  }
+  return obj
 }

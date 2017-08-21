@@ -16,6 +16,11 @@ services:
   socketio:
     port: 9991
 
+external.processor:
+  js:
+    path:
+      - ~/.config/copilot/processors/js
+
 processors : 
   buildin.apps[linux]:
     launch: gtk-launch
