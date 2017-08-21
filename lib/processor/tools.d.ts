@@ -72,3 +72,9 @@ export declare function cmd(op: IOption): {
     };
 }[];
 export declare function all(op: IOption, list: IResult[]): IResult[];
+export declare function reload(): {
+    text: string;
+    param: {
+        action: string;
+    };
+}[];
