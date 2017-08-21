@@ -163,3 +163,12 @@ export function all(op: IOption, list: IResult[]): IResult[] {
     }
   }].concat(list as any)
 }
+
+export function reload() {
+  return [{
+    text: "Reload copilot",
+    param: {
+      action: "reload"
+    }
+  }]
+}
