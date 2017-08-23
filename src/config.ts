@@ -16,7 +16,8 @@ function loadConfig() {
       debug("Failed to load custom config", e)
     }
     //load external processors' config file
-    loadConfig4ExProcessors(getConfigByKeys("external.processors", "js", "path") || [])
+    loadConfig4ExProcessors(getConfigByKeys("external.processor", "js", "path") || [])
+    loadConfig4ExProcessors(getConfigByKeys("external.processor", "script", "path") || [])
     debug("Currenct config:", config)
     aliasInfoFix();
     processInfoFix();
@@ -30,9 +31,9 @@ function loadConfig4ExProcessors(path: string[]) {
     p = utils.path(p)
     try {
       return readdirSync(`${p}`)
-        .filter(f => statSync(`${p}/${f}`)
-          .isDirectory() && existsSync(`${p}/${f}/config.yaml`))
-        .map(f => `${p}/${f}`)
+      .filter(f => statSync(`${p}/${f}`)
+      .isDirectory() && existsSync(`${p}/${f}/config.yaml`))
+      .map(f => `${p}/${f}/config.yaml`)
     } catch (e) {
       warn(e)
     }
@@ -40,10 +41,14 @@ function loadConfig4ExProcessors(path: string[]) {
   })
     .forEach(p => {
       p.forEach(configFile => {
-        debug(configFile)
-        let c = yaml.safeLoad(configFile)
-        config.processors = merge(config.processors, c.processors || {})
-        config.processorsInfo = merge(config.processorsInfo, c.processorsInfo || {})
+        try {
+          let c = yaml.safeLoad(readFileSync(configFile))
+          config.processors = merge(config.processors, c.processors || {})
+          config.processorsInfo = merge(config.processorsInfo, c.processorsInfo || {})
+        } catch (e) {
+          warn("Failed to copy config section, config file is:", e)
+          warn(e)
+        }
       });
     })
 

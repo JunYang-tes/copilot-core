@@ -158,6 +158,7 @@ export async function handle(input: string): Promise<IResult[]> {
       }
 
       if (processor) {
+        next.args._original = next.original
         ret = (await processor(next.args || {}, pre))
           .map(item => ({
             ...item,

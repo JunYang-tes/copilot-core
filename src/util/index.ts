@@ -107,7 +107,9 @@ export function speicalSplit(str: string, by: RegExp = /\s/) {
         } else if (char === "'") {
           state = inSingleQuotedStr
         } else if (by.test(char)) {
-          parts.push(currentPart)
+          if (currentPart.length) {
+            parts.push(currentPart)
+          }
           currentPart = ""
           continue
         }

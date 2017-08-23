@@ -42,6 +42,7 @@ export interface IProcessInitParam {
 }
 export declare type IOption = {
     strings: string[];
+    "_original": string;
 } & {
     [name: string]: any;
 };

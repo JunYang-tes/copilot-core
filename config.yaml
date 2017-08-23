@@ -20,6 +20,9 @@ external.processor:
   js:
     path:
       - ~/.config/copilot/processors/js
+  script:
+    path:
+      - ~/.config/copilot/processors/script
 
 processors : 
   buildin.apps[linux]:

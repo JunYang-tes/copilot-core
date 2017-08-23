@@ -29,17 +29,13 @@ startUp()
     //     }
     //   })
 
-    handle("b")
-      .then((ret: IResult[]) => {
+    // handle("b")
+    //   .then((ret: IResult[]) => {
 
-        debug(ret)
-      })
+    //     debug(ret)
+    //   })
 
-    let store: Store = new Store({ namespace: "mystore" })
-    debug("setJSON")
-    await store.setJson("hello", { a: 1, b: 2 })
-    debug("getJSON")
-    debug(await store.getJson("hello"))
+
     // handle("a google")
     //   .then((ret: IResult[]) => {
     //     ret.forEach(debug)
