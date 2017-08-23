@@ -1,4 +1,5 @@
 import { load } from "./processor/index"
+import { load as exLoad } from "./external"
 import { IResult, Processor } from "./types"
 import { parse, IParsedCmd } from "./cmd"
 import { IconHelper } from "./icon"
@@ -34,6 +35,11 @@ export async function startUp() {
   debug("@startUp")
   let loaded = await load({})
   processors = loaded.processors
+  let exProcessors = await exLoad()
+  for (let p of exProcessors) {
+    Object.assign(processors, p.processors)
+    // Object.assign(loaded.errors)
+  }
   debug("Processors:", processors)
   Object.keys(loaded.errors)
     .forEach(key => {
@@ -152,6 +158,7 @@ export async function handle(input: string): Promise<IResult[]> {
       }
 
       if (processor) {
+        next.args._original = next.original
         ret = (await processor(next.args || {}, pre))
           .map(item => ({
             ...item,

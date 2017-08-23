@@ -79,7 +79,7 @@ export default {
             }
             name = tmp
             // this[name] = launder(entryFile)
-            debug(`Create launcher:`, entry.name, `${p}/${entryFile}`)
+            // debug(`Create launcher:`, entry.name, `${p}/${entryFile}`)
             return result
           } catch (e) {
             warn(`Failed to parse ${p}/${entryFile}`, e)

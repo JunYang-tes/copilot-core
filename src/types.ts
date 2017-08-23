@@ -40,6 +40,7 @@ export interface IProcessInitParam {
 }
 export type IOption = {
   strings: string[]
+  "_original": string
 } & {
     [name: string]: any
   }

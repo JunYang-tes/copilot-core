@@ -18,6 +18,7 @@ export declare function now(): {
 export declare function toPipe(op: IOption): {
     [name: string]: any;
     strings: string[];
+    "_original": string;
 }[] | {
     title: string;
     text: string;

@@ -4,7 +4,7 @@ This is a core library,**NOT** a client with user interface, [Here](https://www.
 
 **NOTE**
 
-This project is still building, and was tested only under Ubuntu 16.04
+This project is still building, and it was tested only under Ubuntu 16.04
 
 **FEATURE**
 + Windows management
@@ -142,9 +142,50 @@ A CLI user interface is coming.
 oxford API has a limitation related to query times per month. You'd better to register a new account to get a key to replace to default one.
 [Oxford link](https://developer.oxforddictionaries.com)
 
+## External processor
+
+There are two types external processor at the moment,they are `js processor` and `script processor`. The `js processor` are written by javascript and it has the same structure of internal processor and it can use the internal services of cause. The `script processor` are executable scripts which output data in `yaml` format. `Copilot` put arguments to `script's` cmd line argument and put `IResult` items to `script's` stdin stream.
+
+The config section `external.processor` tells copilot where to find external processor.
+
+```yaml
+external.processor:
+  js:
+    path:
+      - ~/.config/copilot/processors/js
+  script:
+    path:
+      - ~/.config/copilot/processors/script
+```
+
+For example:
+For the below dir structure:
+```
+js
+  --qianba
+    -- hello.js
+    -- demo.js
+    -- config.yaml
+  -- foo
+    -- bar.js
+script
+  --qianba
+    -- hello.sh
+    -- config.yaml
+```
+Copilot will try to load js processors  from `qianba/*.js` and script processors from `qianba/*.hello` and it will also read all those `config.yaml`. The differences is that each `.js` many contains many processors but each `script processor` file just contains only one processor.
+
+**name prefix**
++ `js.[dir].[file].[function]` for js processors (js.qianba.hello.hello)
++ `spt.[dir].[file]` for script processors (spt.qianba.hello)
+
+NOTE
+>Only `processors` and `processorsInfo` sections are approved in config.yaml on external processor dirs 
+
+
 ## Todo list
 
 + Chrome integration
-+ Load external processors
 + Notification framework
 + Improve app launch
++ Improve processor name match

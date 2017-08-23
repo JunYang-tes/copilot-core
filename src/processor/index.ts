@@ -6,6 +6,7 @@ import * as path from "path"
 import { Check, InvalidResult, Processor, ProcessorName } from "../types"
 import { getConfig } from "../config"
 import { getServices } from "../services"
+import { nameFn, prefix } from "../util/ProcessorName"
 
 const { asyncify } = require("array-asyncify")
 const { debug, warn, error } = require("b-logger")("processor.loader")
@@ -27,13 +28,11 @@ function validProcessorName(name) {
 async function parse(
   obj: any,
   fileName: string,
-  name: ({
-    fileName,
-    funName }: { fileName: string, funName: string }) => string): Promise<IParsed> {
+  name: nameFn): Promise<IParsed> {
   const processors: { [name: string]: Processor } = {}
   //inject services and config
   let param = {
-    cfg: getConfig(name({ fileName, funName: "" }).replace(/\.$/, "")),
+    cfg: getConfig(name(fileName, "").replace(/\.$/, "")),
     services: {}
   }
   if (obj.declare && util.isFunction(obj.declare)) {
@@ -48,7 +47,7 @@ async function parse(
             key: serviceName,
             value: getServices(serviceName, {
               ...serviceParam,
-              namespace: name({ fileName, funName: "" })
+              namespace: name(fileName, "")
             })
           }
         })
@@ -69,7 +68,7 @@ async function parse(
           .filter((key) => validProcessorName(key) && invalid.every(e => e.key !== key))
           .map(key => obj[key].bind(obj))
           .forEach(fun => {
-            processors[name({ funName: fun.name, fileName }).replace(/\.default$/, "")] = fun
+            processors[name(fileName, fun.name).replace(/\.default$/, "")] = fun
           })
         return {
           processors,
@@ -82,7 +81,7 @@ async function parse(
             .map(key => obj[key].bind(obj))
             .forEach(fun => {
               debug(`Load processor ${fun.name}`)
-              processors[name({ funName: fun.name, fileName })] = fun
+              processors[name(fileName, fun.name)] = fun
             })
         } else {
           return {
@@ -103,7 +102,7 @@ async function parse(
       // .map(key => obj[key].bind(obj))
       .forEach(key => {
         let fun = obj[key]
-        processors[name({ funName: key, fileName }).replace(/\.default$/, "")] = fun.bind(obj)
+        processors[name(fileName, key).replace(/\.default$/, "")] = fun.bind(obj)
       })
   }
   return { processors }
@@ -111,8 +110,8 @@ async function parse(
 
 export async function load({
   dir = __dirname,
-  name = ({ fileName, funName }: { fileName: string, funName: string }) =>
-    `buildin.${fileName}.${funName.replace("bound ", "")}` }) {
+  name = (fileName, processorName) =>
+    `buildin.${fileName}.${processorName.replace("bound ", "")}` }) {
   debug(`Load processors from ${dir}`)
   let files = await readdir(dir)
   let processors: { [name: string]: Processor } = {}
@@ -148,7 +147,7 @@ export async function load({
     if ("default" in module) {
       const defvalue = module.default
       if (util.isFunction(defvalue)) {
-        processors[name({ funName: defvalue.name, fileName })] = defvalue
+        processors[name(fileName, defvalue.name)] = defvalue
         continue;
       } else {
         module = defvalue
