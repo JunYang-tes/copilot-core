@@ -19,6 +19,7 @@ export interface ISocketIOParam {
 export interface IClient {
   send(event: string, msg: any): void,
   onJson(event: string, cb: (arg: any) => void),
+  on(event: string, cb: (_: any) => void),
   close(): void
 }
 export interface ISocket {
@@ -60,7 +61,8 @@ export class SocketIO implements ISocket {
 const WebSocket = require("ws");
 const wss = new WebSocket.Server({ server });
 const { debug: wsDebug } = require("b-logger")("copilot.services.WebSocket")
-export class OriginalWebSocket implements ISocket {
+//Event Oriental Light-weight WebSocket
+export class EOLWebSocket implements ISocket {
   private events: typeof EventEmitter
   constructor({ namespace }: ISocketIOParam) {
     wsDebug("namespace", namespace)
@@ -69,7 +71,7 @@ export class OriginalWebSocket implements ISocket {
       wsDebug(req.url)
       wsDebug(req.url.substring(1).replace(/\\/g, "."))
       if (req.url.substring(1).replace(/\\/g, ".") === namespace) {
-        wsDebug("client connected", ws)
+        wsDebug("client connected")
         let clientEvents: typeof EventEmitter = new EventEmitter()
         ws.on("message", (data) => {
           wsDebug(data)
@@ -83,6 +85,9 @@ export class OriginalWebSocket implements ISocket {
           this.events.emit("close")
         })
         this.events.emit("connection", {
+          on(event, cb) {
+            ws.on(event, cb)
+          },
           send(event: string, data) {
             ws.send(JSON.stringify({
               event,

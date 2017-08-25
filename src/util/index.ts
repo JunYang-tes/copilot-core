@@ -3,6 +3,7 @@ import { spawn } from "child_process"
 import * as fs from "fs"
 import * as util from "util"
 import * as os from "os"
+import { Processor } from "../types"
 const helper = {
   path: (str: string) => {
     return str.replace(/^\s*~/, os.homedir)
@@ -121,4 +122,13 @@ export function speicalSplit(str: string, by: RegExp = /\s/) {
     parts.push(currentPart)
   }
   return parts;
+}
+export function processorFilter(name: string) {
+  return !["declare", "init"].includes(name) && !/_$/.test(name)
+}
+export function decorate(obj: any, decorator: (obj: any, f: Processor) => Processor) {
+  Object.keys(obj)
+    .filter(processorFilter)
+    .forEach(key => obj[key] = decorator(obj, obj[key]).bind(obj))
+  return obj
 }

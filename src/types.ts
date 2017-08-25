@@ -1,4 +1,4 @@
-export type Processor = (op: any, list: IResult[]) => IResult[]
+export type Processor = (op: any, list: IResult[]) => IResult[] | Promise<IResult[]>
 export type Action = (_: IResult) => IResult[] | void;
 export type Check = () => { valid: boolean, msg: string } | InvalidResult[]
 export type ProcessorName = ({ fileName, funName }: { fileName: string, funName: string }) => string
