@@ -32,7 +32,6 @@ export class SingleClientServicesCall {
         this.client = arg
         this.client.onJson(".response", (res: any) => {
           debug(res)
-          debug(this.calls)
           if ("seq" in res) {
             let handler = this.calls[+res.seq]
             if (res.result) {

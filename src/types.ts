@@ -65,3 +65,7 @@ export type ITimeoutParam = IRunParam & {
 export type ICopyParam = IRunParam & {
   field: string
 }
+export type IFunctionParam = IRunParam & {
+  func: (...args) => any,
+  args: any[]
+}
