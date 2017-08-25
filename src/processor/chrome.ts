@@ -1,8 +1,16 @@
 import { decorate } from "../util"
+import { IResult } from "../types"
 const { debug } = require("b-logger")("copilot.chrome")
 interface IHistory {
   title: string,
   url: string
+}
+interface ITab {
+  active: boolean,
+  title: string,
+  url: string,
+  id: number,
+  winId: number
 }
 class ChromeProxy {
   private srpc: {
@@ -13,6 +21,12 @@ class ChromeProxy {
   }
   public getHistory(): Promise<IHistory> {
     return this.srpc.call<IHistory>("getHistory")
+  }
+  public getTabs(): Promise<ITab> {
+    return this.srpc.call<ITab>("getTabs")
+  }
+  public activeTab(id: number) {
+    return this.srpc.call("activeTab", id)
   }
 }
 const TIPS = "This means chrome not may running or extention may not be installed"
@@ -45,14 +59,31 @@ export default decorate({
   open() {
     return [{ text: "Open link" }]
   },
-  tabs() {
-    return [{ text: "list tabls" }]
+  async tabs() {
+    return (await this.chrome.getTabs()).map(tab => ({
+      text: tab.title,
+      value: tab.title,
+      param: {
+        tabId: tab.id,
+        winId: tab.winId
+      }
+    }))
   },
   close() {
     return [{ text: "close tabs" }]
   },
-  active() {
-    return [{ text: "active tab" }]
+  active(op, list: IResult[]) {
+    let tabs = list.filter(item => !!item.param.tabId)
+    return tabs.map(tab => ({
+      title: "Active",
+      text: tab.text,
+      value: tab.value,
+      param: {
+        action: "func",
+        func: this.chrome.activeTab.bind(this.chrome),
+        args: [tab.param.winId, tab.param.tabId]
+      }
+    }))
   },
   new() {
     return [{ text: "new tab" }]
