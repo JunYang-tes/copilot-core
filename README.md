@@ -135,7 +135,7 @@ A CLI user interface is coming.
 |buildin.win.active | active window
 |buildin.win.close | close window
 |buildin.win.move | move window
-
+|buildin.chrome.* | Chrome intergration 
 
 
 ## oxford dict
@@ -185,7 +185,7 @@ NOTE
 
 ## Todo list
 
-+ Chrome integration
++ Ding integration
 + Notification framework
 + Improve app launch
 + Improve processor name match
