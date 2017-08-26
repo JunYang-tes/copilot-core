@@ -168,7 +168,6 @@ export async function handle(input: string): Promise<IResult[]> {
         if (idx === cmds.length - 1 && !cmdInfo.original.lastCmdHasOpt) {
           debug("last")
           debug("complete ", next.originalCmd)
-          debug(complete(cmdInfo.original.lastCmd))
           ret = ret.concat(complete(cmdInfo.original.lastCmd))
         }
         cache.set(next.cmd, { cmd: next.original, result: ret })

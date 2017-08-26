@@ -31,15 +31,16 @@ export class SingleClientServicesCall {
       } else {
         this.client = arg
         this.client.onJson(".response", (res: any) => {
-          debug(res)
           if ("seq" in res) {
             let handler = this.calls[+res.seq]
             if (res.result) {
               handler.res(res.result)
+            } else if (res.error) {
+              handler.rej(res.error)
             } else {
-              handler.rej(new Error(res.error || "Unknow"))
-              delete this.calls[+res.seq]
+              handler.res()
             }
+            delete this.calls[+res.seq]
           }
         })
         this.client.on("close", () => {
@@ -66,7 +67,6 @@ export class SingleClientServicesCall {
       }, this.timeout);
       this.calls[seq] = {
         res: (...ret) => {
-          debug("Res", ret)
           clearTimeout(clr)
           res(...ret)
         },
