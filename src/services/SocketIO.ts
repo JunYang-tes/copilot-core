@@ -74,7 +74,6 @@ export class EOLWebSocket implements ISocket {
         wsDebug("client connected")
         let clientEvents: typeof EventEmitter = new EventEmitter()
         ws.on("message", (data) => {
-          wsDebug(data)
           if (typeof data === "string") {
             let json = JSON.parse(data)
             clientEvents.emit(json.event, json.data)

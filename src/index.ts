@@ -15,6 +15,7 @@ import { Cache } from "./util/cache"
 const { debug, warn, error } = require("b-logger")("copilot.main")
 const { asyncify } = require("array-asyncify")
 const iconHelper = new IconHelper([`${__dirname}/../icon`])
+const fuzzy = require("fuzzy")
 
 interface ICacheItem {
   result: IResult[],
@@ -57,17 +58,16 @@ export async function run(result: IResult) {
   }
   cache.clear()
 }
-function lookup(name: string): { processor: Processor, fullname: string } {
-  let using = getUsing()
-  let fullname = name
-  debug(`Locakup ${name}`)
-  while (!(fullname in processors) && using.length) {
-    fullname = `${using.pop()}.${name}`
-    debug(`next ${fullname}`)
-  }
-  return {
-    fullname,
-    processor: processors[fullname]
+function lookup(name: string): { processor?: Processor, fullname?: string } {
+  let matched = fuzzy.filter(name, processorNames)
+  if (matched.length > 0) {
+    let best = matched[0]
+    return {
+      fullname: best.original,
+      processor: processors[best.original]
+    }
+  } else {
+    return {}
   }
 }
 
@@ -78,29 +78,39 @@ function complete(cmd: string) {
   let aliasInfo = getAliasInfo()
 
   let alias = Object.keys(getAlias())
-    .filter(a => a.startsWith(cmd))
-    .map(alia => aliasInfo[alia])
+  let matchedAlias = fuzzy.filter(cmd, alias, {
+    pre: "`",
+    post: "`"
+  })
+
   let pInfo = getProcessorsInfo()
-  return alias.concat(
-    processorNames.filter(name => {
-      return names.some(i => name.toLowerCase().startsWith(i))
-    })
-      .map(name => {
-        let info = pInfo[name] || {
-          title: name,
-          value: name,
-          text: name,
-          icon: name
+  let matched = fuzzy.filter(cmd, processorNames, {
+    pre: "`",
+    post: "`"
+  })
+
+  // return alias.concat(
+  return matchedAlias.map(item => ({
+    ...aliasInfo[item.original],
+    title: item.string.replace(/``/g, "")
+  })).concat(
+    matched
+      .map(item => {
+        let info = pInfo[item.original] || {
+          value: item.original,
+          text: item.original,
+          icon: item.original
         }
         return {
           ...info,
+          title: item.string.replace(/``/g, ""),
           param: {
             action: "complete",
-            processor: processors[name]
+            processor: processors[item.original]
           }
         }
       })
-  )
+    )
 }
 function lookUpIcon(cmd) {
   let aliasInfo = getAliasInfo()
@@ -135,10 +145,12 @@ export async function handle(input: string): Promise<IResult[]> {
   }
   let cmdInfo = parse(input)
   let cmds = cmdInfo.parsed
-  let useCache = true
+  let useCache = cmds.length > 1 //Just use cache for piped cmd
+
   return asyncify(cmds)
     .reduce(async (pre: any, next: IParsedCmd, idx: number) => {
       debug("Process: ", next)
+      debug(idx, "of", cmds.length - 1)
       let cachedRet = cache.get(next.cmd)
       if (cachedRet && cachedRet.cmd === next.original && useCache) {
         debug("Using cache for ", next.original)
@@ -147,41 +159,33 @@ export async function handle(input: string): Promise<IResult[]> {
         debug("Dont use cache for ", next.cmd)
         useCache = false
       }
-      let { processor, fullname } = lookup(next.cmd)
-      debug(`==${next.cmd}==`)
-      debug(`==${next.original}==`)
-      if (!processor &&
-        (idx !== cmds.length - 1 || next.original.length > next.originalCmd.length)) {
-        let completed = complete(next.originalCmd)
-        debug(completed[0])
-        completed.length > 0 && (processor = completed[0].param.processor)
-      }
 
-      if (processor) {
+      let { processor, fullname } = lookup(next.cmd)
+      if (idx === cmds.length - 1 && !cmdInfo.original.lastCmdHasOpt) {
+        //The last one
+        let completed = complete(next.cmd)
+        if (completed.length === 1) {
+          debug("one matched exec it")
+          next.args._original = next.original
+          return processor(next.args || {}, pre)
+        }
+        return completed
+        // return complete(cmdInfo.original.lastCmd)
+      } else if (processor) {
+        debug(processor.name)
         next.args._original = next.original
         ret = (await processor(next.args || {}, pre))
           .map(item => ({
             ...item,
             icon: item.icon || fullname
           }))
-        // debug(`Result of ${next.cmd}`, ret)
-        if (idx === cmds.length - 1 && !cmdInfo.original.lastCmdHasOpt) {
-          debug("last")
-          debug("complete ", next.originalCmd)
-          ret = ret.concat(complete(cmdInfo.original.lastCmd))
-        }
+        debug(`Result of ${next.cmd}`, ret.slice(0, 10))
         cache.set(next.cmd, { cmd: next.original, result: ret })
         return ret
-      } else /*if (idx === cmds.length - 1)*/ {
+      } else {
         debug("Complete-")
         return complete(cmdInfo.original.lastCmd)
-      } /*else {
-        debug(`No such processor:`, next.cmd)
-        throw {
-          type: "command-not-found",
-          cmd: next.cmd
-        }
-      } */
+      }
     }, [])
     .map(item => ({
       ...item,

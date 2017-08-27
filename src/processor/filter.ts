@@ -64,8 +64,8 @@ export function search(op: IOption, list: IResult[]) {
   })
 }
 function escape(input) {
-  return input.replace(/\(/g, "((")
-    .replace(/\)/g, "))")
+  //TODO: escape
+  return input
 }
 function format(input: string, positions: Array<[number, number]>) {
   let result: string[] = []
@@ -74,11 +74,11 @@ function format(input: string, positions: Array<[number, number]>) {
     if (last !== start) {
       result.push(escape(input.slice(last, start)))
     }
-    result.push(`(b)${escape(input.slice(start, end + 1))}(reset)`)
-    last = end + 1;
+    result.push(`\`${escape(input.slice(start, end + 1))}\``)
+    last = end + 1
   }
   if (last !== input.length) {
     result.push(escape(input.substring(last)))
   }
-  return result.join()
+  return result.join("")
 }

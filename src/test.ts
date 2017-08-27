@@ -29,11 +29,11 @@ startUp()
     //     }
     //   })
 
-    // handle("b")
-    //   .then((ret: IResult[]) => {
+    handle("ch.b | ch")
+      .then((ret: IResult[]) => {
 
-    //     debug(ret)
-    //   })
+        debug(ret)
+      })
 
 
     // handle("a google")

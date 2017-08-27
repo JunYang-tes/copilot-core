@@ -37,11 +37,12 @@ export function split(cmd: string) {
 }
 function findMatchedAlias(cmd) {
   let alias = getAlias()
-  let names = Object.keys(alias).sort()
-  if (cmd in alias) {
-    return alias[cmd]
-  }
-  return names.find((value) => value.startsWith(cmd))
+  return alias[cmd]
+  // let names = Object.keys(alias).sort()
+  // if (cmd in alias) {
+  //   return alias[cmd]
+  // }
+  // return names.find((value) => value.startsWith(cmd))
 }
 
 export function prepare(cmd: string): IPrepared[] {
