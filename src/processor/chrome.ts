@@ -73,7 +73,7 @@ export default decorate({
     let { srpc } = services
     this.srpc = srpc
     this.chrome = new ChromeProxy(srpc)
-    this.maxBookmarksCount = maxBookmarksCount || 1000
+    this.maxBookmarksCount = maxBookmarksCount || 2000
   },
   incognito(op, list) {
     let url = urlFix(op.strings.join(""))
