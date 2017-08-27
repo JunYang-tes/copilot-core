@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from "fs"
 import { parse } from "path"
 import os = require("os")
-import utils from "./util"
+import { homePath } from "./util"
 const merge = require("deepmerge")
 const { debug, warn } = require("b-logger")("copilot.config")
 const yaml = require("js-yaml")
@@ -28,12 +28,12 @@ function loadConfig4ExProcessors(path: string[]) {
   debug("merge external processor's config")
   path.map(p => {
     //p is a path of processors,each dir in p is a processor
-    p = utils.path(p)
+    p = homePath(p)
     try {
       return readdirSync(`${p}`)
-      .filter(f => statSync(`${p}/${f}`)
-      .isDirectory() && existsSync(`${p}/${f}/config.yaml`))
-      .map(f => `${p}/${f}/config.yaml`)
+        .filter(f => statSync(`${p}/${f}`)
+          .isDirectory() && existsSync(`${p}/${f}/config.yaml`))
+        .map(f => `${p}/${f}/config.yaml`)
     } catch (e) {
       warn(e)
     }
@@ -60,7 +60,7 @@ export function getAlias(): { [alias: string]: string } {
 function lookupConfigFile(name = "config.yaml") {
   let entryPoint = parse(process.argv[1]).dir
   let paths = [
-    utils.path(`~/.config/copilot/${name}`),
+    homePath(`~/.config/copilot/${name}`),
     `${entryPoint}/${name}`,
     `${__dirname}/../${name}`
   ]

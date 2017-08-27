@@ -1,6 +1,6 @@
 import * as fs from "fs"
 import * as OS from "os"
-import { readdir, utils, cmdsRequired } from "../util"
+import { readdir, cmdsRequired } from "../util"
 import { parse, resolve } from "path"
 import { IResult } from "../types"
 

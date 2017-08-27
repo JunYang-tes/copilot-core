@@ -1,4 +1,4 @@
-import utils from "../../util"
+import { homePath } from "../../util"
 import { cmdsRequired } from "../../util"
 import { readdir } from "../../util"
 import { IResult } from "../../types"
@@ -27,10 +27,10 @@ export default {
     this.entires = []
     let iconReg = new RegExp(cfg.icon, "i")
     await Promise.all(cfg.icons.map(async (p: string) => {
-      (await readdir(utils.path(p)))
+      (await readdir(homePath(p)))
         .filter((f: string) => iconReg.test(f))
         .reduce((ret: any, next) => {
-          ret[next.replace(/\..*$/, "")] = `${utils.path(p)}/${next}`
+          ret[next.replace(/\..*$/, "")] = `${homePath(p)}/${next}`
           return ret
         }, icons)
     }))
@@ -50,7 +50,7 @@ export default {
       }
     }
     await Promise.all(this.path.map(async (p: string) => {
-      p = utils.path(p)
+      p = homePath(p)
       let entires = (await readdir(p))
         .filter(name => app.test(name))
       entires = await asyncify(entires)

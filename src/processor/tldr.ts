@@ -1,4 +1,3 @@
-import utils from "../util"
 import { IOption, IResult, ICmdParam } from "../types"
 import tldr = require("tldr/lib/index")
 import platform = require("tldr/lib/platform")

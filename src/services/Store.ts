@@ -1,4 +1,4 @@
-import { utils } from "../util"
+import { homePath, promisify } from "../util"
 import { IServiceParam } from "../types"
 import { getServices } from "../config"
 import { existsSync } from "fs"
@@ -9,7 +9,7 @@ const mkdirp = require("mkdirp")
 
 let dbfile = ":memory:"
 try {
-  dbfile = utils.path(getServices().store.file)
+  dbfile = homePath(getServices().store.file)
   debug("Using ", dbfile)
   if (!existsSync(dbfile)) {
     mkdirp.sync(parse(dbfile).dir)
@@ -28,7 +28,7 @@ interface IRun {
   changes: number
 }
 const db = new sqlite3.Database(dbfile)
-const get: (sql: string, ...param) => any = utils.promisify(db.get.bind(db))
+const get: (sql: string, ...param) => any = promisify(db.get.bind(db))
 const run: (sql: string, ...param) => Promise<IRun> =
   (sql: string, ...param) => new Promise<IRun>((res, rej) => {
     db.run(sql, ...param, function cb(err) {

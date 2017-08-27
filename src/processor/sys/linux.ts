@@ -1,4 +1,4 @@
-import { utils, cmdsRequired } from "../../util"
+import { exec, cmdsRequired } from "../../util"
 import { IOption } from "../../types"
 const { debug } = require("b-logger")("copilot.sys.linux")
 
@@ -46,10 +46,10 @@ export function mute() {
 }
 
 export const wifi = cmdsRequired(["pkexec", "iw", "ip", "awk", "sh"], async function wifi(opt: IOption) {
-  let ifs = (await utils.exec("sh", ["-c", "iw dev | grep Interface | awk '{print $2}'"]))
+  let ifs = (await exec("sh", ["-c", "iw dev | grep Interface | awk '{print $2}'"]))
     .split("\n")
     .filter(i => i)
-  let status = (await utils.exec("sh", ["-c", " ip link show | grep '^[0-9]'"]))
+  let status = (await exec("sh", ["-c", " ip link show | grep '^[0-9]'"]))
     .split("\n")
     .map(line => line.split(/\s+/))
     .filter(a => a.length >= 3)
@@ -74,7 +74,7 @@ export const wifi = cmdsRequired(["pkexec", "iw", "ip", "awk", "sh"], async func
   ["pkexec is missing,install policykit please"]
 )
 export const ip = cmdsRequired(["ifconfig", "awk", "sh"], async function ip() {
-  let ifs: any = (await utils.exec("ifconfig", ["-s"]))
+  let ifs: any = (await exec("ifconfig", ["-s"]))
     .split("\n")
     .slice(1)
     .map(line => line.split(/\s+/))
@@ -84,7 +84,7 @@ export const ip = cmdsRequired(["ifconfig", "awk", "sh"], async function ip() {
 
   for (let i of ifs) {
     try {
-      i.ip = (await utils.exec("ifconfig", [i.name]))
+      i.ip = (await exec("ifconfig", [i.name]))
         .split("\n")
         .filter(line => /inet addr/.test(line))
         .map(line => /\d*\.\d*\.\d*\.\d*/.exec(line))
@@ -105,7 +105,7 @@ export const ip = cmdsRequired(["ifconfig", "awk", "sh"], async function ip() {
 })
 
 export async function bc(opt: IOption) {
-  let ret = await utils.exec("sh", [
+  let ret = await exec("sh", [
     "-c", "echo 1+2 | bc"
   ])
   return [{

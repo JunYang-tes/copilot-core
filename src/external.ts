@@ -3,7 +3,7 @@ import { prefix, nameFn } from "./util/ProcessorName"
 import { getConfigByKeys } from "./config"
 import { Processor, IOption } from "./types"
 import { spawn } from "child_process"
-import utils from "./util"
+import { homePath } from "./util"
 import { readdir, stat, speicalSplit } from "./util"
 const { debug, warn } = require("b-logger")("copilot.external")
 const { asyncify } = require("array-asyncify")
@@ -16,7 +16,7 @@ async function loadFromPathArray(path: string[],
   debug(path)
   return await asyncify(path)
     .map(async p => {
-      p = utils.path(p)
+      p = homePath(p)
       try {
         let dirs = await readdir(p)
         return asyncify(dirs)

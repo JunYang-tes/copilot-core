@@ -1,4 +1,4 @@
-import { cmdsRequired, utils } from "../util"
+import { cmdsRequired, exec } from "../util"
 import { IResult, ICmdParam } from "../types"
 export default {
   filter_(list: IResult[]) {
@@ -12,7 +12,7 @@ export default {
       })
   },
   async list() {
-    let ret = await utils.exec("wmctrl", "-lp")
+    let ret = await exec("wmctrl", "-lp")
     return ret.split("\n")
       .map(line => line.split(/\s+/))
       .map(([id, desktop, pid, machine, ...rest]) => ({

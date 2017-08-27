@@ -1,8 +1,8 @@
 import { IResult, ICmdParam, IOption } from "../types"
-import { utils } from "../util"
+import { exec } from "../util"
 const { debug } = require("b-logger")("processor.process")
 export async function list() {
-  let ret = await utils.exec("ps", "ux")
+  let ret = await exec("ps", "ux")
   return ret.split("\n")
     .map(line => line.split(/\s+/))
     .map(([user, pid, cpu, mem, vsz, rss, tty, stat, start, time, ...command]) => ({

@@ -60,15 +60,15 @@ export class SingleClientServicesCall {
       seq,
       args
     })
-    return new Promise<T>((res, rej) => {
+    return new Promise((res, rej) => {
       let clr = setTimeout(() => {
         delete this.calls[seq]
         rej(new Error("ETIMEOUT"))
       }, this.timeout);
       this.calls[seq] = {
-        res: (...ret) => {
+        res: (ret) => {
           clearTimeout(clr)
-          res(...ret)
+          res(ret)
         },
         rej
       }

@@ -1,16 +1,16 @@
 import * as fs from "fs"
-import utils from "../util"
-import { stat } from "../util"
+import { readdir, stat } from "../util"
+import * as utils from "../util"
 import * as util from "util"
 import * as path from "path"
 import { Check, InvalidResult, Processor, ProcessorName } from "../types"
 import { getConfig } from "../config"
 import { getServices } from "../services"
 import { nameFn, prefix } from "../util/ProcessorName"
-
+const logger = require("b-logger")
 const { asyncify } = require("array-asyncify")
-const { debug, warn, error } = require("b-logger")("processor.loader")
-const readdir: (path: string | Buffer) => Promise<string[]> = utils.promisify(fs.readdir)
+const { debug, warn, error } = logger("processor.loader")
+// const readdir: (path: string | Buffer) => Promise<string[]> = utils.promisify(fs.readdir)
 
 interface IParsed {
   processors?: { [name: string]: Processor },
@@ -143,6 +143,12 @@ export async function load({
   debug("Modules:", modules)
   for (const item of modules) {
     let { module, name: fileName } = item
+    if (util.isFunction(module)) {
+      module = module({
+        logger,
+        utils
+      })
+    }
     debug(`Load ${fileName}`)
     if ("default" in module) {
       const defvalue = module.default

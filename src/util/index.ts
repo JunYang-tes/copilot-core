@@ -42,12 +42,54 @@ const helper = {
     })
   })
 }
+export function homePath(str: string) {
+  return str.replace(/^\s*~/, os.homedir)
+}
+export function exec(command: string, args: any, options = {}) {
+  return new Promise((res: (_: string) => void, rej) => {
+    let arg = util.isArray(args) ? args : [args]
+    let cmd = spawn(command, arg, options)
+    let errorStr = ""
+    let stdout = ""
+    cmd.stderr.on("data", (data: Buffer) => {
+      errorStr += data
+    })
+    cmd.stdout.on("data", (data: Buffer) => {
+      stdout += data.toString()
+    })
+    cmd.on("close", (code: number) => {
+      if (code === 0) {
+        res(stdout)
+      } else {
+        rej({
+          code,
+          errorStr
+        })
+      }
+    })
+  })
+}
+export function sh(command: string, args: any) {
+  return exec(command, args, {
+    shell: true
+  })
+}
+export const promisify = (api: Function) => (...param: any[]) => new Promise((res: (...arg: any[]) => void, rej) => {
+  api(...param, (err: any, ...rest: any[]) => {
+    if (err) {
+      rej(err)
+    } else {
+      res(...rest)
+    }
+  })
+})
+
 type API = () => any
 export const stat: (path: string | Buffer) => Promise<fs.Stats> = helper.promisify(fs.stat)
 export const readdir: (path: string | Buffer) => Promise<string[]> = helper.promisify(fs.readdir)
 export const readFile: (path: string, encoding: string) => Promise<string> = helper.promisify(fs.readFile)
-export default helper
-export const utils = helper
+// export default helper
+// export const utils = helper
 export function cmdsRequired(cmds: string[], fn: any, errors: string[] = []) {
   //TODO:crose-platform
   let error = ""
@@ -56,7 +98,7 @@ export function cmdsRequired(cmds: string[], fn: any, errors: string[] = []) {
       try {
         await Promise.all(cmds.map(async (cmd, idx) => {
           try {
-            await utils.exec("which", cmd)
+            await exec("which", cmd)
           } catch (e) {
             error = errors[idx] || `${cmd} is missing,please to install it`
             throw e
