@@ -168,6 +168,7 @@ export async function load({
         errors[fileName] = parsed.errors
       }
     } catch (e) {
+      error(e)
       errors[path.resolve(`${dir}/${fileName}`)] = `Failed to load processor from file ${fileName},${e}`
     }
   }
