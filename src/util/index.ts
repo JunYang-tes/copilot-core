@@ -88,20 +88,27 @@ type API = () => any
 export const stat: (path: string | Buffer) => Promise<fs.Stats> = helper.promisify(fs.stat)
 export const readdir: (path: string | Buffer) => Promise<string[]> = helper.promisify(fs.readdir)
 export const readFile: (path: string, encoding: string) => Promise<string> = helper.promisify(fs.readFile)
+
+export async function hasCmd(cmd: string) {
+  //TODO:crose-platform
+  try {
+    await exec("which", cmd)
+  } catch (e) {
+    return false
+  }
+  return true
+}
 // export default helper
 // export const utils = helper
 export function cmdsRequired(cmds: string[], fn: any, errors: string[] = []) {
-  //TODO:crose-platform
   let error = ""
   let canUse = true
     ; (async () => {
       try {
         await Promise.all(cmds.map(async (cmd, idx) => {
-          try {
-            await exec("which", cmd)
-          } catch (e) {
+          if (!await hasCmd(cmd)) {
             error = errors[idx] || `${cmd} is missing,please to install it`
-            throw e
+            throw error
           }
         }))
       } catch (e) {

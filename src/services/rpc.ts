@@ -1,20 +1,22 @@
 import { IServiceParam } from "../types"
 import { SocketIO, EOLWebSocket, IClient, ISocket } from "./SocketIO"
+import { EventEmitter } from "events"
 const { debug } = require("b-logger")("copilot.rpc")
-const TYPE = {
+export const TYPE = {
   SOCKETIO: "socketio",
   EOLWebSocket: "eolwebsocket"
 }
 export type IRPCParam = IServiceParam & {
   type: string
 }
-export class SingleClientServicesCall {
+export class SingleClientServicesCall extends EventEmitter {
+  protected socket: ISocket
+  protected client: IClient
   private seq: number
-  private socket: ISocket
-  private client: IClient
   private calls: { [seq: number]: { res: (...args) => void, rej: (err) => void } }
   private timeout: number
   constructor({ namespace, type, timeout }: IServiceParam) {
+    super()
     this.seq = 0
     this.calls = {}
     this.timeout = +timeout || 1000
@@ -26,11 +28,12 @@ export class SingleClientServicesCall {
     this.socket.on<IClient>("connection", (arg: IClient) => {
       debug("Client connected")
       if (this.client) {
-        arg.send(".error", "There is already a client connected")
-        arg.close()
+        // arg.send(".error", "There is already a client connected")
+        // arg.close()
+        this.client.close()
       } else {
         this.client = arg
-        this.client.onJson(".response", (res: any) => {
+        this.client.onJson("response", (res: any) => {
           if ("seq" in res) {
             let handler = this.calls[+res.seq]
             if (res.result) {
@@ -45,18 +48,30 @@ export class SingleClientServicesCall {
         })
         this.client.on("close", () => {
           this.client = null
+          this.emit("disconnected")
           debug("disconnected")
         })
+        this.emit("ready")
       }
     })
   }
+
+  public onReady(callback: () => void) {
+    this.on("ready", callback)
+  }
+
+  public onDisconnected(callback: () => void) {
+    this.on("disconnected", callback)
+  }
+
   public ready(): boolean {
     debug("ready:", !!this.client)
     return !!this.client
   }
   public call<T>(method, ...args): Promise<T> {
     let seq = this.seq++
-    this.client.send(method, {
+    this.client.send("call", {
+      method,
       seq,
       args
     })
@@ -72,6 +87,34 @@ export class SingleClientServicesCall {
         },
         rej
       }
+    })
+  }
+}
+interface IRemoteCall {
+  method: string,
+  seq: number,
+  args: any[]
+}
+export class TwoWayCall extends SingleClientServicesCall {
+  constructor({ type, namespace, provider }) {
+    super({ type, namespace })
+    this.onReady(() => {
+      this.client.onJson("call", async (data: IRemoteCall) => {
+        if (data.method in provider) {
+          try {
+            let ret = await provider[data.method](...data.args)
+            this.client.send("response", {
+              seq: data.seq,
+              ret,
+            })
+          } catch (e) {
+            this.client.send("response", {
+              seq: data.seq,
+              e: e.message
+            })
+          }
+        }
+      })
     })
   }
 }
