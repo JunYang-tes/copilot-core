@@ -46,9 +46,10 @@ export function mute() {
 }
 
 export const wifi = cmdsRequired(["pkexec", "iw", "ip", "awk", "sh"], async function wifi(opt: IOption) {
-  let ifs = (await exec("sh", ["-c", "iw dev | grep Interface | awk '{print $2}'"]))
-    .split("\n")
-    .filter(i => i)
+  let ifs: string[]
+    = (await exec("sh", ["-c", "iw dev | grep Interface | awk '{print $2}'"]))
+      .split("\n")
+      .filter(i => i)
   let status = (await exec("sh", ["-c", " ip link show | grep '^[0-9]'"]))
     .split("\n")
     .map(line => line.split(/\s+/))
@@ -59,7 +60,7 @@ export const wifi = cmdsRequired(["pkexec", "iw", "ip", "awk", "sh"], async func
         up: statusStr.includes("UP")
       }
     })
-    .reduce((i, ret) => (i[ret.name] = ret, i), {})
+    .reduce((i: any, ret) => (i[ret.name] = ret, i), {})
   debug("", ifs, status)
 
   return ifs.map(i => ({
@@ -74,13 +75,14 @@ export const wifi = cmdsRequired(["pkexec", "iw", "ip", "awk", "sh"], async func
   ["pkexec is missing,install policykit please"]
 )
 export const ip = cmdsRequired(["ifconfig", "awk", "sh"], async function ip() {
-  let ifs: any = (await exec("ifconfig", ["-s"]))
-    .split("\n")
-    .slice(1)
-    .map(line => line.split(/\s+/))
-    .map(([name, mtu, met, RXOK, RXERRR]) => ({ name, RXOK: +RXOK }))
-    .filter(i => i.name)
-    .sort((a, b) => b.RXOK - a.RXOK)
+  let ifs: Array<{ name: string, RXOK: number, ip: string }>
+    = (await exec("ifconfig", ["-s"]))
+      .split("\n")
+      .slice(1)
+      .map(line => line.split(/\s+/))
+      .map(([name, mtu, met, RXOK, RXERRR]) => ({ name, RXOK: +RXOK, ip: "" }))
+      .filter(i => i.name)
+      .sort((a, b) => b.RXOK - a.RXOK)
 
   for (let i of ifs) {
     try {

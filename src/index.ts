@@ -27,7 +27,7 @@ let processors: {
 let processorNames: string[]
 let cache = new Cache<ICacheItem>()
 
-process.on("uncaughtException", (e) => {
+process.on("uncaughtException", (e: any) => {
   error("UncaughtException:")
   error(e)
 })
@@ -90,12 +90,12 @@ function complete(cmd: string) {
   })
 
   // return alias.concat(
-  return matchedAlias.map(item => ({
+  return matchedAlias.map((item: any) => ({
     ...aliasInfo[item.original],
     title: item.string.replace(/``/g, "")
   })).concat(
     matched
-      .map(item => {
+      .map((item: any) => {
         let info = pInfo[item.original] || {
           value: item.original,
           text: item.original,
@@ -112,7 +112,7 @@ function complete(cmd: string) {
       })
     )
 }
-function lookUpIcon(cmd) {
+function lookUpIcon(cmd: string) {
   let aliasInfo = getAliasInfo()
   if (aliasInfo[cmd] && aliasInfo[cmd].icon) {
     return aliasInfo[cmd].icon
@@ -187,7 +187,7 @@ export async function handle(input: string): Promise<IResult[]> {
         return complete(cmdInfo.original.lastCmd)
       }
     }, [])
-    .map(item => ({
+    .map((item: IResult) => ({
       ...item,
       icon: iconHelper.fixIcon(item.icon)
     }))

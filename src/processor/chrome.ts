@@ -1,5 +1,6 @@
 import { decorate } from "../util"
-import { IResult } from "../types"
+import { IResult, IOption } from "../types"
+import { SingleClientServicesCall } from "../services/rpc"
 const { debug } = require("b-logger")("copilot.chrome")
 interface IHistory {
   title: string,
@@ -18,9 +19,9 @@ interface IBookmark {
 }
 class ChromeProxy {
   private srpc: {
-    call<T>(method: string, ...args): Promise<T>
+    call<T>(method: string, ...args: any[]): Promise<T>
   }
-  constructor(srpc) {
+  constructor(srpc: SingleClientServicesCall) {
     this.srpc = srpc
   }
   public getHistory(): Promise<IHistory> {
@@ -41,22 +42,22 @@ class ChromeProxy {
   public getCurrentTab = (): Promise<ITab> => {
     return this.srpc.call("getCurrentTab")
   }
-  public newTab = (prop) => {
+  public newTab = (prop: any) => {
     return this.srpc.call("newTab", prop)
   }
-  public getBookmarks = (count): Promise<IBookmark> => {
+  public getBookmarks = (count: number): Promise<IBookmark> => {
     return this.srpc.call("getBookmarks", count)
   }
-  public notify = (title, message) => {
+  public notify = (title: string, message: string) => {
     return this.srpc.call("notify", {
       type: "basic", title, message,
     })
   }
-  public createWin = (prop) => {
+  public createWin = (prop: any) => {
     return this.srpc.call("createWin", prop)
   }
 }
-const urlFix = (url) => /^http/.test(url) ? url : `http://${url}`
+const urlFix = (url: string) => /^http/.test(url) ? url : `http://${url}`
 const TIPS = "This means chrome not may running or extension may not be installed"
 export default decorate({
   declare() {
@@ -69,13 +70,13 @@ export default decorate({
       }
     }
   },
-  init({ services, maxBookmarksCount }) {
+  init({ services, maxBookmarksCount }: { services: any, maxBookmarksCount: number }) {
     let { srpc } = services
     this.srpc = srpc
     this.chrome = new ChromeProxy(srpc)
     this.maxBookmarksCount = maxBookmarksCount || 2000
   },
-  incognito(op, list) {
+  incognito(op: IOption, list: IResult[]) {
     let url = urlFix(op.strings.join(""))
     return [{
       title: "Open in incognito window",
@@ -96,7 +97,7 @@ export default decorate({
   async history() {
     debug("call history")
     return (await this.chrome.getHistory())
-      .map(h => ({
+      .map((h: IHistory) => ({
         title: h.title, text: h.url, value: h.url,
         param: {
           url: h.url
@@ -105,17 +106,17 @@ export default decorate({
   },
   async bookmarks() {
     return (await this.chrome.getBookmarks(this.maxBookmarksCount))
-      .map(b => ({
+      .map((b: IBookmark) => ({
         title: b.title,
         text: b.url,
         value: b.url
       }))
   },
-  open(op, list) {
+  open(op: IOption, list: IResult[]) {
     return this.new(op, list)
   },
   async tabs() {
-    return (await this.chrome.getTabs()).map(tab => ({
+    return (await this.chrome.getTabs()).map((tab: ITab) => ({
       text: tab.title,
       value: tab.title,
       param: {
@@ -124,7 +125,7 @@ export default decorate({
       }
     }))
   },
-  close(op, list: IResult[]) {
+  close(op: IOption, list: IResult[]) {
     let tabs = list.filter(item => !!item.param.tabId)
     return tabs.map(tab => ({
       title: "Close",
@@ -137,7 +138,7 @@ export default decorate({
       }
     }))
   },
-  active(op, list: IResult[]) {
+  active(op: IOption, list: IResult[]) {
     let tabs = list.filter(item => !!item.param.tabId)
     debug(tabs)
     return tabs.map(tab => ({
@@ -152,7 +153,7 @@ export default decorate({
     }))
   },
   async current() {
-    return (await this.chrome.getCurrentTab()).map(tab => ({
+    return (await this.chrome.getCurrentTab()).map((tab: ITab) => ({
       text: tab.title,
       value: tab.title,
       param: {
@@ -161,7 +162,7 @@ export default decorate({
       }
     }))
   },
-  notify(op) {
+  notify(op: IOption) {
     let { title, message } = op
     return [{
       title: "Send Notification",
@@ -173,7 +174,7 @@ export default decorate({
       }
     }]
   },
-  new(op, list: IResult[]) {
+  new(op: IOption, list: IResult[]) {
     if (list.length === 0) {
       let url = urlFix(op.strings.join(" "))
       return [{

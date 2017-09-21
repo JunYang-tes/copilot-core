@@ -4,7 +4,7 @@ import { IServiceParam } from "../types"
 import { SocketIO, EOLWebSocket } from "./SocketIO"
 import { SingleClientServicesCall, TwoWayCall } from "./rpc"
 const { warn } = require("b-logger")("copilot.servcies")
-const services = {
+const services: { [name: string]: any } = {
   store: Store,
   cache: Cache,
   socketio: SocketIO,

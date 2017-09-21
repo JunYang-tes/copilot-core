@@ -100,7 +100,7 @@ export async function hasCmd(cmd: string) {
 }
 // export default helper
 // export const utils = helper
-export function cmdsRequired(cmds: string[], fn: any, errors: string[] = []) {
+export function cmdsRequired(cmds: string[], fn: Function, errors: string[] = []) {
   let error = ""
   let canUse = true
     ; (async () => {
@@ -116,7 +116,7 @@ export function cmdsRequired(cmds: string[], fn: any, errors: string[] = []) {
       }
     })()
 
-  return function cmdsReqWrapper(...args) {
+  return function cmdsReqWrapper(...args: any[]) {
     if (canUse) {
       return fn.apply(this, args)
     } else {

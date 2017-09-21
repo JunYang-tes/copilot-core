@@ -40,7 +40,7 @@ export function search(op: IOption, list: IResult[]) {
     return list
   }
   let result = fuse.search(op.strings.join(" "));
-  return result.map(ret => {
+  return result.map((ret: any) => {
     for (let match of ret.matches) {
       let key = match.key
       let orignal = ret.item[key]
@@ -63,7 +63,7 @@ export function search(op: IOption, list: IResult[]) {
     return ret.item
   })
 }
-function escape(input) {
+function escape(input: string) {
   //TODO: escape
   return input
 }

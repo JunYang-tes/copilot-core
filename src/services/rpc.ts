@@ -13,7 +13,7 @@ export class SingleClientServicesCall extends EventEmitter {
   protected socket: ISocket
   protected client: IClient
   private seq: number
-  private calls: { [seq: number]: { res: (...args) => void, rej: (err) => void } }
+  private calls: { [seq: number]: { res: (...args: any[]) => void, rej: (err: any) => void } }
   private timeout: number
   constructor({ namespace, type, timeout }: IServiceParam) {
     super()
@@ -68,7 +68,7 @@ export class SingleClientServicesCall extends EventEmitter {
     debug("ready:", !!this.client)
     return !!this.client
   }
-  public call<T>(method, ...args): Promise<T> {
+  public call<T>(method: string, ...args: any[]): Promise<T> {
     let seq = this.seq++
     this.client.send("call", {
       method,
@@ -95,8 +95,13 @@ interface IRemoteCall {
   seq: number,
   args: any[]
 }
+export interface ITwoWayCallParam {
+  type: string,
+  namespace: string,
+  provider: any
+}
 export class TwoWayCall extends SingleClientServicesCall {
-  constructor({ type, namespace, provider }) {
+  constructor({ type, namespace, provider }: ITwoWayCallParam) {
     super({ type, namespace })
     this.onReady(() => {
       this.client.onJson("call", async (data: IRemoteCall) => {

@@ -2,7 +2,18 @@ import { IStore, IOption, IResult, ICache } from "../../types"
 const { debug, error } = require("b-logger")("copilot.dict")
 export type format = (_: any) => IResult[]
 export interface IDictParam {
-  loader: (key: string) => IResult[]
+  loader: {
+    load: (key: string) => IResult[] | Promise<IResult[]>
+  }
+}
+export interface IInitParam {
+  cfg: {
+    trigger: string
+  },
+  services: {
+    cache: ICache,
+    store: IStore
+  }
 }
 export class Dict {
   protected cfg: any
@@ -10,7 +21,7 @@ export class Dict {
   private cache: ICache
 
   private loader: any
-  constructor({ loader }) {
+  constructor({ loader }: IDictParam) {
     this.loader = loader
   }
   public declare() {
@@ -26,7 +37,7 @@ export class Dict {
       }
     }
   }
-  public init({ cfg, services }) {
+  public init({ cfg, services }: IInitParam) {
     this.store = services.store
     this.cache = services.cache
     this.cfg = cfg

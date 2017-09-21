@@ -9,7 +9,7 @@ try {
   debug("Failed to get port from config,", e)
 }
 
-server.listen(port, (e) => error)
+server.listen(port, (e: any) => error)
 
 const io = require("socket.io")(server)
 
@@ -18,13 +18,13 @@ export interface ISocketIOParam {
 }
 export interface IClient {
   send(event: string, msg: any): void,
-  onJson(event: string, cb: (arg: any) => void),
-  on(event: string, cb: (_: any) => void),
+  onJson(event: string, cb: (arg: any) => void): void,
+  on(event: string, cb: (_: any) => void): void,
   close(): void
 }
 export interface ISocket {
-  on<T>(event: string, cb: (arg: T) => void),
-  emit(event: string, msg: any)
+  on<T>(event: string, cb: (arg: T) => void): void,
+  emit(event: string, msg: any): void
 }
 export class SocketIO implements ISocket {
   private events: typeof EventEmitter
@@ -32,16 +32,16 @@ export class SocketIO implements ISocket {
   constructor({ namespace }: ISocketIOParam) {
     this.events = new EventEmitter()
     this.io = io.of(namespace)
-    this.io.on("connection", (client) => {
+    this.io.on("connection", (client: IClient) => {
       debug("client connected")
       this.events.emit("connection", {
-        send(event, msg) {
+        send(event: string, msg: any) {
           client.send(event, msg)
         },
-        on(event, cb: (_: any) => void) {
+        on(event: string, cb: (_: any) => void) {
           client.on(event, cb)
         },
-        onJson(event, cb: (_: any) => void) {
+        onJson(event: string, cb: (_: any) => void) {
           client.on(event, (arg: string) => {
             cb(JSON.parse(arg))
           })
@@ -53,7 +53,7 @@ export class SocketIO implements ISocket {
   public on<T>(event: string, cb: (arg: T) => void) {
     this.events.on(event, cb)
   }
-  public emit(event: string, msg) {
+  public emit(event: string, msg: any) {
     this.io.emit(event, msg)
   }
 }
@@ -67,13 +67,13 @@ export class EOLWebSocket implements ISocket {
   constructor({ namespace }: ISocketIOParam) {
     wsDebug("namespace", namespace)
     this.events = new EventEmitter()
-    wss.on("connection", (ws, req) => {
+    wss.on("connection", (ws: any, req: any) => {
       wsDebug(req.url)
       wsDebug(req.url.substring(1).replace(/\\/g, "."))
       if (req.url.substring(1).replace(/\\/g, ".") === namespace) {
         wsDebug("client connected")
         let clientEvents: typeof EventEmitter = new EventEmitter()
-        ws.on("message", (data) => {
+        ws.on("message", (data: string | Buffer) => {
           if (typeof data === "string") {
             let json = JSON.parse(data)
             clientEvents.emit(json.event, json.data)
@@ -84,16 +84,16 @@ export class EOLWebSocket implements ISocket {
           this.events.emit("close")
         })
         this.events.emit("connection", {
-          on(event, cb) {
+          on(event: string, cb: (_: any) => void) {
             ws.on(event, cb)
           },
-          send(event: string, data) {
+          send(event: string, data: any) {
             ws.send(JSON.stringify({
               event,
               data
             }))
           },
-          onJson(event: string, cb) {
+          onJson(event: string, cb: (arg: any) => void) {
             clientEvents.on(event, cb)
           },
           close() {
@@ -107,7 +107,7 @@ export class EOLWebSocket implements ISocket {
   public on<T>(event: string, cb: (arg: T) => void) {
     this.events.on(event, cb)
   }
-  public emit(event: string, msg) {
+  public emit(event: string, msg: any) {
 
   }
 }

@@ -1,13 +1,13 @@
 import { IOption, IResult, ICmdParam } from "../types"
-import tldr = require("tldr/lib/index")
-import platform = require("tldr/lib/platform")
-import cache = require("tldr/lib/cache")
+const tldr = require("tldr/lib/index")
+const platform = require("tldr/lib/platform")
+const cache = require("tldr/lib/cache")
 const { debug } = require("b-logger")("copilor.processors.tldr")
-const commandsFor = (os) => new Promise<string[]>((res, rej) => {
+const commandsFor = (os: any) => new Promise<string[]>((res, rej) => {
   tldr.commandsFor(os, res);
 })
-const getPage = (cmd) => new Promise<string[]>((res, rej) => {
-  cache.getPage(cmd, (err, content) => {
+const getPage = (cmd: string) => new Promise<string[]>((res, rej) => {
+  cache.getPage(cmd, (err: any, content?: string) => {
     if (err) {
       rej(err)
     } else {
