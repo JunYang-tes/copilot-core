@@ -15,20 +15,20 @@ async function loadFromPathArray(path: string[],
   debug("Load external processor from ")
   debug(path)
   return await asyncify(path)
-    .map(async p => {
+    .map(async (p: string) => {
       p = homePath(p)
       try {
         let dirs = await readdir(p)
         return asyncify(dirs)
-          .filter(async file => (await stat(`${p}/${file}`)).isDirectory())
-          .map(f => `${p}/${f}`)
+          .filter(async (file: string) => (await stat(`${p}/${file}`)).isDirectory())
+          .map((f: string) => `${p}/${f}`)
       } catch (e) {
         warn(e)
       }
       return []
     })
-    .reduce((ret, next) => (ret.push(...next), ret), [])
-    .map(async p => {
+    .reduce((ret: any, next: any) => (ret.push(...next), ret), [])
+    .map(async (p: string) => {
       try {
         debug("load external  processor from ", p)
         return await load(p)
@@ -50,7 +50,7 @@ async function loadJsProcessor(path: string[]) {
     })
   })
 }
-function wrapper(filePath) {
+function wrapper(filePath: string) {
   return (op: IOption, list: any) => {
     debug(speicalSplit(op._original))
     let cp = spawn(filePath, speicalSplit(op._original).slice(1))
@@ -58,8 +58,8 @@ function wrapper(filePath) {
       cp.stdin.write(yaml.dump(list))
     }
     let out = ""
-    let resolver;
-    let rejector;
+    let resolver: any;
+    let rejector: any;
     let promsie = new Promise((res, rej) => {
       resolver = res
       rejector = rej
@@ -80,9 +80,9 @@ function wrapper(filePath) {
     return promsie
   }
 }
-async function loadScript(path, processorName: nameFn) {
+async function loadScript(path: string, processorName: nameFn) {
   return asyncify(await readdir(path))
-    .filter(async file => {
+    .filter(async (file: string) => {
       try {
         return (await stat(pathJoin(path, file))).isFile()
       } catch (e) {
@@ -90,7 +90,7 @@ async function loadScript(path, processorName: nameFn) {
         return false
       }
     })
-    .map(file => {
+    .map((file: string) => {
       debug("load script:", file)
       let { dir, name } = parse(pathJoin(path, file))
       debug(pathJoin(path, file))
@@ -102,7 +102,7 @@ async function loadScript(path, processorName: nameFn) {
         processorName: name
       }
     })
-    .reduce((ret, next: any) => (ret.processors[processorName(next.fileName, next.processorName)]
+    .reduce((ret: any, next: any) => (ret.processors[processorName(next.fileName, next.processorName)]
       = wrapper(next.filePath), ret), { processors: {} })
 }
 

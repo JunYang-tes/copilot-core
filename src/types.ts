@@ -66,6 +66,6 @@ export type ICopyParam = IRunParam & {
   field: string
 }
 export type IFunctionParam = IRunParam & {
-  func: (...args) => any,
+  func: (...args: any[]) => any,
   args: any[]
 }

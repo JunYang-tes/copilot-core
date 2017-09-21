@@ -3,10 +3,10 @@ export class Cache<T> {
   constructor() {
     this.cache = {}
   }
-  public get(key) {
+  public get(key: string) {
     return this.cache[key]
   }
-  public set(key, value) {
+  public set(key: string, value: T) {
     return this.cache[key] = value
   }
   public clear() {

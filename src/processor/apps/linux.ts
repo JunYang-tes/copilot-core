@@ -85,7 +85,7 @@ export default {
             warn(`Failed to parse ${p}/${entryFile}`, e)
           }
         })
-        .filter(i => i)
+        .filter((i: any) => i)
       debug(`Loaded entries:${entires.length}`)
       this.entires.push(...entires)
     }))

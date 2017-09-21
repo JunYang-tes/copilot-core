@@ -20,7 +20,7 @@ function isCheckResultArray(x: any): x is InvalidResult[] {
   return x instanceof Array
 }
 
-function validProcessorName(name) {
+function validProcessorName(name: string) {
   let specialName = ["check", "init", "declare"]
   return !specialName.includes(name) && !/_$/.test(name)
 }
@@ -41,7 +41,7 @@ async function parse(
     debug("declared dependencies:", declare)
     if (declare.services) {
       param.services = declare.services
-        .map(serviceName => {
+        .map((serviceName: string) => {
           let serviceParam = declare.params[serviceName] || {}
           return {
             key: serviceName,
@@ -51,7 +51,7 @@ async function parse(
             })
           }
         })
-        .reduce((ret, next) => (ret[next.key] = next.value, ret), {})
+        .reduce((ret: any, next: any) => (ret[next.key] = next.value, ret), {})
     }
   }
 
@@ -110,7 +110,7 @@ async function parse(
 
 export async function load({
   dir = __dirname,
-  name = (fileName, processorName) =>
+  name = (fileName: string, processorName: string) =>
     `buildin.${fileName}.${processorName.replace("bound ", "")}` }) {
   debug(`Load processors from ${dir}`)
   let files = await readdir(dir)
@@ -139,7 +139,7 @@ export async function load({
         error(`Failed to load ${dir}/${file}`, e)
       }
     })
-    .filter(i => i)
+    .filter((i: any) => i)
   debug("Modules:", modules)
   for (const item of modules) {
     let { module, name: fileName } = item

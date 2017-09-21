@@ -28,10 +28,10 @@ interface IRun {
   changes: number
 }
 const db = new sqlite3.Database(dbfile)
-const get: (sql: string, ...param) => any = promisify(db.get.bind(db))
-const run: (sql: string, ...param) => Promise<IRun> =
-  (sql: string, ...param) => new Promise<IRun>((res, rej) => {
-    db.run(sql, ...param, function cb(err) {
+const get: (sql: string, ...param: any[]) => any = promisify(db.get.bind(db))
+const run: (sql: string, ...param: any[]) => Promise<IRun> =
+  (sql: string, ...param: any[]) => new Promise<IRun>((res, rej) => {
+    db.run(sql, ...param, function cb(err: any) {
       if (err) {
         rej(err)
       } else {
@@ -39,8 +39,8 @@ const run: (sql: string, ...param) => Promise<IRun> =
       }
     })
   })
-let inilizedResolver;
-let inilizedReject;
+let inilizedResolver: () => void;
+let inilizedReject: (err: any) => void;
 let inilizedPromise = new Promise((res, rej) => { inilizedResolver = res, inilizedReject = rej })
 
 async function initializeDb() {

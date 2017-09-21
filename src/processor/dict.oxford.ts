@@ -65,7 +65,7 @@ class Oxford extends NetDict<IOxfordParam> {
       }
     })
   }
-  public init(param) {
+  public init(param: any) {
     super.init(param)
     this.header = {
       Accept: "application/json",

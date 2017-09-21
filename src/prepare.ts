@@ -35,7 +35,7 @@ export function split(cmd: string) {
       }
     })
 }
-function findMatchedAlias(cmd) {
+function findMatchedAlias(cmd: string) {
   let alias = getAlias()
   return alias[cmd]
   // let names = Object.keys(alias).sort()
@@ -61,7 +61,7 @@ export function prepare(cmd: string): IPrepared[] {
           let idx = +m.replace(/[^\d]/g, "") - 1
           if (idx < args.length) {
             let replace = args[idx]
-            args[idx] = 0
+            args[idx] = null
             return replace;
           }
           return m;
@@ -77,8 +77,8 @@ export function prepare(cmd: string): IPrepared[] {
     }
     debug("alias applied:", ret)
     if (flag) {
-      cmd = ret.reduce((ret: any, next) =>
-        (ret += next.cmd + " " + next.rest + " |", ret), "")
+      cmd = ret.reduce((pre: any, next) =>
+        (pre += next.cmd + " " + next.rest + " |", pre), "")
       ret = split(cmd.substr(0, cmd.length - 1))
     }
   }

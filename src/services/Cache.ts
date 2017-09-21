@@ -10,7 +10,7 @@ export interface ICacheParam {
 export class Cache {
   private cache: any
   private loader: ILoader
-  constructor({ loader, size }) {
+  constructor({ loader, size }: ICacheParam) {
     this.cache = LRU({
       max: size
     })

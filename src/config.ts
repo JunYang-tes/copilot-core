@@ -72,7 +72,7 @@ function lookupConfigFile(name = "config.yaml") {
   throw new Error("No config.yaml found")
 }
 
-function infoFix(keys, info, name = (key) => key) {
+function infoFix(keys: any, info: any, name = (key: string) => key) {
   let alias = config.alias;
   for (let alia of keys) {
     if (alia in info) {

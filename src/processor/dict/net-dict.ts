@@ -1,4 +1,4 @@
-import { Dict } from "./dict"
+import { Dict, IInitParam } from "./dict"
 import { IResult, IStore } from "../../types"
 const querystring = require("querystring")
 const fetch = require("node-fetch")
@@ -48,7 +48,7 @@ export class NetDict<S> extends Dict {
     declared.services.push("store")
     return declared
   }
-  public init(params) {
+  public init(params: IInitParam) {
     super.init(params)
     this.url = this.cfg.url
     this.store = params.services.store
@@ -64,7 +64,7 @@ export class NetDict<S> extends Dict {
     )
   }
 }
-export async function JSONResponse(res) {
+export async function JSONResponse(res: any) {
   let ret = await res.text()
   try {
     return JSON.parse(ret)

@@ -1,10 +1,10 @@
 import { ICopyParam, IResult } from "../types"
-import copyPaste = require("clipboardy")
+const copyPaste = require("clipboardy")
 const { debug, error } = require("b-logger")("copilot.action.copy")
 export async function copy(param: ICopyParam, item: IResult) {
   let value = item.value
   if (param && param.field && param.field in item) {
-    value = item[param.field]
+    value = (item as any)[param.field]
   }
   try {
     debug("copy ", value)
