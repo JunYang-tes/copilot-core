@@ -60,7 +60,9 @@ class ChromeProxy {
 const urlFix = (url: string) => /^http/.test(url) ? url : `http://${url}`
 const TIPS = "This means chrome not may running or extension may not be installed"
 export default decorate({
-  declare() {
+  //injected
+  srpc: null as SingleClientServicesCall,
+  declare(): any {
     return {
       services: ["srpc"],
       params: {
@@ -76,7 +78,7 @@ export default decorate({
     this.chrome = new ChromeProxy(srpc)
     this.maxBookmarksCount = maxBookmarksCount || 2000
   },
-  incognito(op: IOption, list: IResult[]) {
+  incognito(op: IOption, list: IResult[]): IResult[] {
     let url = urlFix(op.strings.join(""))
     return [{
       title: "Open in incognito window",
@@ -94,7 +96,7 @@ export default decorate({
       }
     }]
   },
-  async history() {
+  async history(): Promise<IResult[]> {
     debug("call history")
     return (await this.chrome.getHistory())
       .map((h: IHistory) => ({
@@ -162,7 +164,7 @@ export default decorate({
       }
     }))
   },
-  notify(op: IOption) {
+  notify(op: IOption): IResult[] {
     let { title, message } = op
     return [{
       title: "Send Notification",
@@ -174,7 +176,7 @@ export default decorate({
       }
     }]
   },
-  new(op: IOption, list: IResult[]) {
+  new(op: IOption, list: IResult[]): IResult[] {
     if (list.length === 0) {
       let url = urlFix(op.strings.join(" "))
       return [{

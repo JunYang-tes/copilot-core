@@ -4,6 +4,7 @@ import * as fs from "fs"
 import * as util from "util"
 import * as os from "os"
 import { Processor } from "../types"
+const fuzzy = require("fuzzy")
 const helper = {
   path: (str: string) => {
     return str.replace(/^\s*~/, os.homedir)
@@ -175,9 +176,26 @@ export function speicalSplit(str: string, by: RegExp = /\s/) {
 export function processorFilter(name: string) {
   return !["declare", "init"].includes(name) && !/_$/.test(name)
 }
-export function decorate(obj: any, decorator: (obj: any, f: Processor) => Processor) {
-  Object.keys(obj)
+export function decorate<T>(obj: T, decorator: (obj: T, f: Processor) => Processor): T {
+  let object: any = obj
+  Object.keys(object)
     .filter(processorFilter)
-    .forEach(key => obj[key] = decorator(obj, obj[key]).bind(obj))
-  return obj
+    .forEach(key => object[key] = decorator(object, object[key]).bind(obj))
+  return object as T
+}
+export interface ISearchResult {
+  string: string,
+  index: number,
+  score: number,
+  original: string
+}
+export function search<T>(keywords: string, list: T[], extractor?: (input: T) => string): ISearchResult[] {
+  return fuzzy.filter(keywords, list, {
+    pre: "`",
+    post: "`",
+    extract: extractor
+  }).map((item: ISearchResult) => ({
+    ...item,
+    string: item.string.replace(/``/g, "")
+  }))
 }
