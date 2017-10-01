@@ -135,7 +135,7 @@ alias:
   first: head 1
   last: tail 1
   n: head __arg__ | last
-  a: wins | grep -i __arg__ | buildin.win.active
+  a: wins |  search __arg__ | buildin.win.active
   close: wins | buildin.win.close | search __arg__
   wm: wins | search __arg__ | buildin.win.move __arg0__ __arg1__
   run: buildin.apps.list | search __arg__ | buildin.apps.launch
