@@ -3,6 +3,7 @@ import { load as exLoad } from "./external"
 import { IResult, Processor } from "./types"
 import { parse, IParsedCmd } from "./cmd"
 import { IconHelper } from "./icon"
+import { search } from "./util"
 import {
   getConfig,
   getUsing,
@@ -15,7 +16,6 @@ import { Cache } from "./util/cache"
 const { debug, warn, error } = require("b-logger")("copilot.main")
 const { asyncify } = require("array-asyncify")
 const iconHelper = new IconHelper([`${__dirname}/../icon`])
-const fuzzy = require("fuzzy")
 
 interface ICacheItem {
   result: IResult[],
@@ -59,7 +59,7 @@ export async function run(result: IResult) {
   cache.clear()
 }
 function lookup(name: string): { processor?: Processor, fullname?: string } {
-  let matched = fuzzy.filter(name, processorNames)
+  let matched = search(name, processorNames)
   if (matched.length > 0) {
     let best = matched[0]
     return {
@@ -78,16 +78,10 @@ function complete(cmd: string) {
   let aliasInfo = getAliasInfo()
 
   let alias = Object.keys(getAlias())
-  let matchedAlias = fuzzy.filter(cmd, alias, {
-    pre: "`",
-    post: "`"
-  })
+  let matchedAlias = search(cmd, alias)
 
   let pInfo = getProcessorsInfo()
-  let matched = fuzzy.filter(cmd, processorNames, {
-    pre: "`",
-    post: "`"
-  })
+  let matched = search(cmd, processorNames)
 
   // return alias.concat(
   return matchedAlias.map((item: any) => ({
